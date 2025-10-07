@@ -50,6 +50,11 @@ export default function App() {
     }
   };
 
+  // Fetch data when component loads
+  useEffect(() => {
+    fetchDonations();
+  }, []);
+
 
     // Filter items by category or search
   const filteredItems = items.filter(
