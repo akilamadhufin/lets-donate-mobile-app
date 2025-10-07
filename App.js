@@ -5,6 +5,7 @@ import { StyleSheet, Text, View } from 'react-native';
 
 export default function App() {
 
+// useState for authentication
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
 
