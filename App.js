@@ -164,6 +164,25 @@ export default function App() {
           />
         )}
 
+         {/* Bottom Navigation */}
+        <View style={styles.bottomNav}>
+          <TouchableOpacity style={styles.navBtn}>
+            <Text style={styles.navIcon}>🏠</Text>
+            <Text style={styles.navTextActive}>Home</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.navBtn} onPress={() => router.push('/donate')}>
+            <Text style={styles.navIcon}>🤲</Text>
+            <Text style={styles.navText}>Donate</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.navBtn}>
+            <Text style={styles.navIcon}>🧺</Text>
+            <Text style={styles.navText}>Basket</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.navBtn}>
+            <Text style={styles.navIcon}>👤</Text>
+            <Text style={styles.navText}>Profile</Text>
+          </TouchableOpacity>
+        </View>
 
         </View>
       </SafeAreaView>
@@ -343,5 +362,71 @@ const styles = StyleSheet.create({
   },
   bookBtnTextDisabled: {
     color: '#888888',
+  },
+  bottomNav: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    height: 60,
+    flexDirection: 'row',
+    backgroundColor: '#fff',
+    borderTopWidth: 1,
+    borderTopColor: '#eee',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 8,
+  },
+  navBtn: {
+    alignItems: 'center',
+    flex: 1,
+  },
+  navIcon: {
+    fontSize: 22,
+    marginBottom: 2,
+  },
+  navText: {
+    fontSize: 12,
+    color: '#888',
+  },
+  navTextActive: {
+    fontSize: 12,
+    color: '#00C6AE',
+    fontWeight: 'bold',
+  },
+  centerContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 20,
+  },
+  loadingText: {
+    marginTop: 10,
+    fontSize: 16,
+    color: '#888',
+  },
+  errorText: {
+    fontSize: 16,
+    color: '#ff4444',
+    textAlign: 'center',
+    marginBottom: 10,
+  },
+  retryBtn: {
+    backgroundColor: '#00C6AE',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 8,
+  },
+  retryBtnText: {
+    color: '#fff',
+    fontWeight: 'bold',
+  },
+  noItemsText: {
+    fontSize: 16,
+    color: '#888',
+    textAlign: 'center',
   },
 });
