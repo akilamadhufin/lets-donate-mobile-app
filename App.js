@@ -7,7 +7,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 const categories = ['All', 'Clothes', 'Books', 'Sports', 'Electronics'];
 const SERVER_URL = 'http://10.0.2.2:3000'; // server URL
 
-export default function App() {
+export default function App({user, onLogout}) {
 
 // useState for authentication
   const [isLoggedIn, setIsLoggedIn] = useState(false);
