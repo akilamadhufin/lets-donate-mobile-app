@@ -1,6 +1,6 @@
-
 import React, { useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
+import { Text,View } from 'react-native';
 
 import HomeScreen from './components/HomeScreen';
 
@@ -24,11 +24,11 @@ export default function App() {
   }
   // Show login/register screen if not logged in
   return (
-    <>
+    <View>
       <StatusBar style="auto" />
       {/* Add your login/register UI here */}
-      <h1>Welcome! Please log in or register.</h1>
-    </>
+      <Text>Welcome! Please log in or register.</Text>
+    </View>
   );
 }
 
