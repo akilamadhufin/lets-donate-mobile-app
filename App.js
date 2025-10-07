@@ -50,6 +50,12 @@ export default function App() {
     }
   };
 
+  // Handle pull-to-refresh
+  const onRefresh = () => {
+    setRefreshing(true);
+    fetchDonations(true);
+  };
+
   // Fetch data when component loads
   useEffect(() => {
     fetchDonations();
