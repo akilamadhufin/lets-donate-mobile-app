@@ -50,6 +50,43 @@ export default function App() {
     }
   };
 
+    // Render individual item
+  const renderItem = ({ item }) => (
+    <View style={styles.itemCardRow}>
+      <Image 
+        source={
+          item.image 
+            ? { uri: `${SERVER_URL}${item.image}` }
+            : require('../assets/adaptive-icon.png')
+        } 
+        style={styles.itemImage} 
+      />
+      <View style={[styles.itemCard, !item.available && styles.itemCardUnavailable]}>
+        <View style={styles.titleRow}>
+          <Text style={styles.itemTitle}>{item.title}</Text>
+          <View style={[styles.statusBadge, item.available ? styles.statusAvailable : styles.statusUnavailable]}>
+            <Text style={[styles.statusText, item.available ? styles.statusTextAvailable : styles.statusTextUnavailable]}>
+              {item.available ? '✓ Available' : '✗ Booked'}
+            </Text>
+          </View>
+        </View>
+        <Text style={styles.itemLocation}>Pickup from {item.pickupLocation}</Text>
+        
+        <TouchableOpacity style={styles.detailsBtn}>
+          <Text style={styles.detailsBtnText}>More Details</Text>
+        </TouchableOpacity>
+        <TouchableOpacity 
+          style={[styles.bookBtn, !item.available && styles.bookBtnDisabled]}
+          disabled={!item.available}
+        >
+          <Text style={[styles.bookBtnText, !item.available && styles.bookBtnTextDisabled]}>
+            {item.available ? 'Book Item' : 'Already Booked'}
+          </Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
+
 
 
   return (
