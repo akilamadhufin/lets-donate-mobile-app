@@ -174,7 +174,174 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
+    paddingTop: 40,
+    paddingHorizontal: 10,
+  },
+  header: {
+    marginBottom: 10,
+  },
+  greetingRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
+    marginBottom: 10,
+  },
+  greetingSmall: {
+    fontSize: 12,
+    color: '#888',
+    textAlign: 'center',
+  },
+  greetingBold: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 10,
+  },
+  logoutButton: {
+    backgroundColor: '#ff4444',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 6,
+  },
+  logoutText: {
+    color: '#fff',
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  searchBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#f5f5f5',
+    borderRadius: 10,
+    paddingHorizontal: 10,
+    marginBottom: 10,
+  },
+  searchInput: {
+    flex: 1,
+    height: 40,
+    fontSize: 14,
+    backgroundColor: 'transparent',
+  },
+  searchButton: {
+    backgroundColor: '#00C6AE',
+    borderRadius: 20,
+    padding: 8,
+    marginLeft: 5,
+  },
+  categoryScroll: {
+    marginBottom: 10,
+  },
+  categoryBtn: {
+    backgroundColor: '#f5f5f5',
+    borderRadius: 20,
+    paddingHorizontal: 16,
+    paddingVertical: 6,
+    marginRight: 8,
+  },
+  categoryBtnActive: {
+    backgroundColor: '#00C6AE',
+  },
+  categoryText: {
+    color: '#888',
+    fontWeight: '500',
+  },
+  categoryTextActive: {
+    color: '#fff',
+  },
+  flatListContent: {
+    paddingBottom: 80,
+  },
+  itemCardRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  itemImage: {
+    width: 120,
+    height: 120,
+    borderRadius: 12,
+    marginRight: 10,
+    backgroundColor: '#eee',
+  },
+  itemCard: {
+    flex: 1,
+    backgroundColor: '#F9F9F9',
+    borderRadius: 18,
+    padding: 14,
     justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  itemCardUnavailable: {
+    opacity: 0.7,
+    backgroundColor: '#f0f0f0',
+  },
+  titleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 4,
+  },
+  itemTitle: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#00C6AE',
+    marginBottom: 4,
+  },
+  statusBadge: {
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 12,
+    marginLeft: 8,
+  },
+  statusAvailable: {
+    backgroundColor: '#e8f5e8',
+  },
+  statusUnavailable: {
+    backgroundColor: '#ffe8e8',
+  },
+  statusText: {
+    fontSize: 11,
+    fontWeight: 'bold',
+  },
+  statusTextAvailable: {
+    color: '#2d8a2d',
+  },
+  statusTextUnavailable: {
+    color: '#cc4444',
+  },
+  itemLocation: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#222',
+    marginBottom: 8,
+  },
+  detailsBtn: {
+    backgroundColor: '#ddd',
+    borderRadius: 8,
+    paddingVertical: 6,
+    marginBottom: 6,
+    alignItems: 'center',
+  },
+  detailsBtnText: {
+    color: '#333',
+    fontWeight: '500',
+  },
+  bookBtn: {
+    backgroundColor: '#00C6AE',
+    borderRadius: 8,
+    paddingVertical: 8,
+    alignItems: 'center',
+  },
+  bookBtnDisabled: {
+    backgroundColor: '#cccccc',
+  },
+  bookBtnText: {
+    color: '#fff',
+    fontWeight: 'bold',
+  },
+  bookBtnTextDisabled: {
+    color: '#888888',
   },
 });
