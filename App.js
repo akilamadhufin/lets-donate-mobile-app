@@ -50,6 +50,14 @@ export default function App() {
     }
   };
 
+
+    // Filter items by category or search
+  const filteredItems = items.filter(
+    (item) =>
+      (selectedCategory === 'All' || item.category === selectedCategory) &&
+      item.title.toLowerCase().includes(search.toLowerCase())
+  );
+
    // Render empty component
   const renderEmptyComponent = () => (
     <View style={styles.centerContainer}>
