@@ -104,6 +104,19 @@ export default function App() {
             </TouchableOpacity>
           </View>
 
+          {/* Search Bar */}
+          <View style={styles.searchBar}>
+            <TextInput
+              style={styles.searchInput}
+              placeholder="search by category or name"
+              value={search}
+              onChangeText={setSearch}
+            />
+            <TouchableOpacity style={styles.searchButton}>
+              <Text style={{ fontSize: 20, color: '#fff' }}>🔍</Text>
+            </TouchableOpacity>
+          </View>
+
 
         </View>
       </SafeAreaView>
