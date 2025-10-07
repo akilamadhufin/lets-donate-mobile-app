@@ -1,7 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, TextInput,TouchableOpacity,Image,ScrollView,ActivityIndicator,FlatList, } from 'react-native';
 
-
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function App() {
 
