@@ -50,6 +50,18 @@ export default function App() {
     }
   };
 
+   // Render empty component
+  const renderEmptyComponent = () => (
+    <View style={styles.centerContainer}>
+      <Text style={styles.noItemsText}>
+        {selectedCategory === 'All' 
+          ? 'No donations available at the moment.'
+          : `No ${selectedCategory.toLowerCase()} items available.`
+        }
+      </Text>
+    </View>
+  );
+
     // Render individual item
   const renderItem = ({ item }) => (
     <View style={styles.itemCardRow}>
