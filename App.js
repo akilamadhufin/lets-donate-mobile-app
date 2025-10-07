@@ -117,6 +117,20 @@ export default function App() {
             </TouchableOpacity>
           </View>
 
+          {/* Category Filters */}
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.categoryScroll}>
+            {categories.map((cat) => (
+              <TouchableOpacity
+                key={cat}
+                style={[styles.categoryBtn, selectedCategory === cat && styles.categoryBtnActive]}
+                onPress={() => setSelectedCategory(cat)}
+              >
+                <Text style={[styles.categoryText, selectedCategory === cat && styles.categoryTextActive]}>{cat}</Text>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+        </View>
+
 
         </View>
       </SafeAreaView>
