@@ -90,10 +90,23 @@ export default function App() {
 
 
   return (
-    <View style={styles.container}>
-      <Text>this is let's donate app</Text>
-      <StatusBar style="auto" />
-    </View>
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}></SafeAreaView>
+      <View style={styles.container}>
+        {/* Greeting */}
+        <View style={styles.header}>
+          <View style={styles.greetingRow}>
+            <View>
+              <Text style={styles.greetingSmall}>Hi {user?.firstname || 'User'}!!</Text>
+              <Text style={styles.greetingBold}>Good Morning</Text>
+            </View>
+            <TouchableOpacity style={styles.logoutButton} onPress={onLogout}>
+              <Text style={styles.logoutText}>Logout</Text>
+            </TouchableOpacity>
+          </View>
+
+
+        </View>
+      </SafeAreaView>
   );
 }
 
