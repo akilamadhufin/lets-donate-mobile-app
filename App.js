@@ -131,6 +131,39 @@ export default function App() {
           </ScrollView>
         </View>
 
+        {/* while loading the donations */}
+        {loading && (
+          <View style={styles.centerContainer}>
+            <ActivityIndicator size="large" color="#00C6AE" />
+            <Text style={styles.loadingText}>Loading donations...</Text>
+          </View>
+        )}
+
+        {/* if donations are not loaded */}
+        {error && (
+          <View style={styles.centerContainer}>
+            <Text style={styles.errorText}>{error}</Text>
+            <TouchableOpacity style={styles.retryBtn} onPress={fetchDonations}>
+              <Text style={styles.retryBtnText}>Retry</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+
+        {/* Item List */}
+        {!loading && !error && (
+          <FlatList
+            data={filteredItems}
+            renderItem={renderItem}
+            keyExtractor={(item) => item._id}
+            ListEmptyComponent={renderEmptyComponent}
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={styles.flatListContent}
+            ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
+          />
+        )}
+
 
         </View>
       </SafeAreaView>
