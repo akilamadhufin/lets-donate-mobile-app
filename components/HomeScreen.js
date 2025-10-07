@@ -26,6 +26,206 @@ const HomeScreen = ({ user, onLogout }) => {
   const [error, setError] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
 
+
+      // Fetch donations from server
+    const fetchDonations = async (isRefresh = false) => {
+      try {
+        if (!isRefresh) setLoading(true);
+        const response = await fetch(`${SERVER_URL}/api/donations`);
+        console.log('Response status:', response.status);
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        const donations = data.data;
+        
+        console.log('Using donations array:', donations.length, 'items');
+        
+        setItems(donations);
+        setError(null);
+      } catch (err) {
+        console.error('Error fetching donations:', err);
+        setError('Failed to load donations. Please check your internet connection.');
+      } finally {
+        if (isRefresh) {
+          setRefreshing(false);
+        } else {
+          setLoading(false);
+        }
+      }
+    };
+  
+    // Handle pull-to-refresh
+    const onRefresh = () => {
+      setRefreshing(true);
+      fetchDonations(true);
+    };
+  
+    // Fetch data when component loads
+    useEffect(() => {
+      fetchDonations();
+    }, []);
+  
+  
+      // Filter items by category or search
+    const filteredItems = items.filter(
+      (item) =>
+        (selectedCategory === 'All' || item.category === selectedCategory) &&
+        item.title.toLowerCase().includes(search.toLowerCase())
+    );
+  
+     // Render empty component
+    const renderEmptyComponent = () => (
+      <View style={styles.centerContainer}>
+        <Text style={styles.noItemsText}>
+          {selectedCategory === 'All' 
+            ? 'No donations available at the moment.'
+            : `No ${selectedCategory.toLowerCase()} items available.`
+          }
+        </Text>
+      </View>
+    );
+  
+      // Render individual item
+    const renderItem = ({ item }) => (
+      <View style={styles.itemCardRow}>
+        <Image 
+          source={
+            item.image 
+              ? { uri: `${SERVER_URL}${item.image}` }
+              : require('../assets/adaptive-icon.png')
+          } 
+          style={styles.itemImage} 
+        />
+        <View style={[styles.itemCard, !item.available && styles.itemCardUnavailable]}>
+          <View style={styles.titleRow}>
+            <Text style={styles.itemTitle}>{item.title}</Text>
+            <View style={[styles.statusBadge, item.available ? styles.statusAvailable : styles.statusUnavailable]}>
+              <Text style={[styles.statusText, item.available ? styles.statusTextAvailable : styles.statusTextUnavailable]}>
+                {item.available ? '✓ Available' : '✗ Booked'}
+              </Text>
+            </View>
+          </View>
+          <Text style={styles.itemLocation}>Pickup from {item.pickupLocation}</Text>
+          
+          <TouchableOpacity style={styles.detailsBtn}>
+            <Text style={styles.detailsBtnText}>More Details</Text>
+          </TouchableOpacity>
+          <TouchableOpacity 
+            style={[styles.bookBtn, !item.available && styles.bookBtnDisabled]}
+            disabled={!item.available}
+          >
+            <Text style={[styles.bookBtnText, !item.available && styles.bookBtnTextDisabled]}>
+              {item.available ? 'Book Item' : 'Already Booked'}
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    );
+
+      return (
+        <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
+          <View style={styles.container}>
+            {/* Greeting */}
+            <View style={styles.header}>
+              <View style={styles.greetingRow}>
+                <View>
+                  <Text style={styles.greetingSmall}>Hi {user?.firstname || 'User'}!!</Text>
+                  <Text style={styles.greetingBold}>Good Morning</Text>
+                </View>
+                <TouchableOpacity style={styles.logoutButton} onPress={onLogout}>
+                  <Text style={styles.logoutText}>Logout</Text>
+                </TouchableOpacity>
+              </View>
+    
+              {/* Search Bar */}
+              <View style={styles.searchBar}>
+                <TextInput
+                  style={styles.searchInput}
+                  placeholder="search by category or name"
+                  value={search}
+                  onChangeText={setSearch}
+                />
+                <TouchableOpacity style={styles.searchButton}>
+                  <Text style={{ fontSize: 20, color: '#fff' }}>🔍</Text>
+                </TouchableOpacity>
+              </View>
+    
+              {/* Category Filters */}
+              <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.categoryScroll}>
+                {categories.map((cat) => (
+                  <TouchableOpacity
+                    key={cat}
+                    style={[styles.categoryBtn, selectedCategory === cat && styles.categoryBtnActive]}
+                    onPress={() => setSelectedCategory(cat)}
+                  >
+                    <Text style={[styles.categoryText, selectedCategory === cat && styles.categoryTextActive]}>{cat}</Text>
+                  </TouchableOpacity>
+                ))}
+              </ScrollView>
+            </View>
+    
+            {/* while loading the donations */}
+            {loading && (
+              <View style={styles.centerContainer}>
+                <ActivityIndicator size="large" color="#00C6AE" />
+                <Text style={styles.loadingText}>Loading donations...</Text>
+              </View>
+            )}
+    
+            {/* if donations are not loaded */}
+            {error && (
+              <View style={styles.centerContainer}>
+                <Text style={styles.errorText}>{error}</Text>
+                <TouchableOpacity style={styles.retryBtn} onPress={fetchDonations}>
+                  <Text style={styles.retryBtnText}>Retry</Text>
+                </TouchableOpacity>
+              </View>
+            )}
+    
+            {/* Item List */}
+            {!loading && !error && (
+              <FlatList
+                data={filteredItems}
+                renderItem={renderItem}
+                keyExtractor={(item) => item._id}
+                ListEmptyComponent={renderEmptyComponent}
+                refreshing={refreshing}
+                onRefresh={onRefresh}
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={styles.flatListContent}
+                ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
+              />
+            )}
+    
+             {/* Bottom Navigation */}
+            <View style={styles.bottomNav}>
+              <TouchableOpacity style={styles.navBtn}>
+                <Text style={styles.navIcon}>🏠</Text>
+                <Text style={styles.navTextActive}>Home</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.navBtn} onPress={() => router.push('/donate')}>
+                <Text style={styles.navIcon}>🤲</Text>
+                <Text style={styles.navText}>Donate</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.navBtn}>
+                <Text style={styles.navIcon}>🧺</Text>
+                <Text style={styles.navText}>Basket</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.navBtn}>
+                <Text style={styles.navIcon}>👤</Text>
+                <Text style={styles.navText}>Profile</Text>
+              </TouchableOpacity>
+            </View>
+    
+            </View>
+          </SafeAreaView>
+      );
+
+
+
+
 }
 
 const styles = StyleSheet.create({
