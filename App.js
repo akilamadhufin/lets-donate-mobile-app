@@ -1,17 +1,19 @@
 import React, { useState } from 'react';
-import LoginScreen from './components/LoginScreen';
+
 import { StatusBar } from 'expo-status-bar';
 import { Text,View } from 'react-native';
 
 import HomeScreen from './components/HomeScreen';
 import RegisterScreen from './components/RegisterScreen';
+import LoginScreen from './components/LoginScreen';
+
+const SERVER_URL = 'http://10.0.2.2:3000';
 
 export default function App() {
 
 // useState for authentication
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
-  
   const [loginLoading, setLoginLoading] = useState(false);
   const [loginError, setLoginError] = useState('');
 
@@ -82,10 +84,26 @@ const handleShowRegister = () => {
     try {
       setLoginLoading(true);
       setLoginError('');
-      // ...server request logic...
-      // On success:
-      // setUser(userData);
-      // setIsLoggedIn(true);
+      const response = await fetch(`${SERVER_URL}/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: `email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`,
+      });
+
+      // The server redirects on success, so we check for redirect or success status
+      if (response.redirected || response.status === 200) {
+        // Create a user object for the frontend (since server doesn't return JSON)
+        const userData = {
+          email: email,
+          firstname: email.split('@')[0], // Extract firstname from email
+        };
+        setUser(userData);
+        setIsLoggedIn(true);
+      } else {
+        throw new Error('Invalid credentials');
+      }
     } catch (err) {
       setLoginError('Invalid email or password');
     } finally {
