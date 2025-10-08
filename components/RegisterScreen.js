@@ -1,12 +1,5 @@
 import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  StyleSheet,
-  ActivityIndicator,
-} from 'react-native';
+import {View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator, ScrollView,} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 const RegisterScreen = ({ onRegister, onBackToLogin, loading, error }) => {
@@ -22,10 +15,15 @@ const RegisterScreen = ({ onRegister, onBackToLogin, loading, error }) => {
   return(
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
-        <View style={styles.header}>
-          <Text> test register screen </Text>
-  
+        {/* Header */}
+       <View style={styles.header}>
+          <TouchableOpacity style={styles.backButton} onPress={onBackToLogin}>
+            <Text style={styles.backArrow}>←</Text>
+          </TouchableOpacity>
+          <Text style={styles.title}>Sign up</Text>
         </View>
+  
+        
       </ScrollView>
     </SafeAreaView>
   
