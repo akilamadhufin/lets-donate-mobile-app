@@ -18,7 +18,21 @@ export default function App() {
     setIsLoggedIn(false);
     setUser(null);
   };
-
+  // Login function
+  const handleLogin = async (email, password) => {
+    try {
+      setLoginLoading(true);
+      setLoginError('');
+      // ...server request logic...
+      // On success:
+      // setUser(userData);
+      // setIsLoggedIn(true);
+    } catch (err) {
+      setLoginError('Invalid email or password');
+    } finally {
+      setLoginLoading(false);
+    }
+  };
 
 // Show main app if logged in
   if (isLoggedIn) {
