@@ -30,8 +30,11 @@ const LoginScreen = ({ onLogin, onSignUp, loading, error }) => {
                      <Text style={styles.loginTitle}>Login</Text>
                    </View>
             {/* Logo/Icon */}
-                           <View style={styles.logoContainer}>
-                             <View style={styles.logoIcon}>
-                               <Text style={styles.heartIcon}>💚</Text>
-                             </View>
-                           </View>
+                        <View style={styles.logoContainer}>
+                        <View style={styles.logoIcon}>
+                        <Text style={styles.heartIcon}>💚</Text>
+                        </View>
+                        </View>
+            {/* Welcome Text */}
+                         <Text style={styles.welcomeTitle}>Welcome Back</Text>
+                        <Text style={styles.welcomeSubtitle}>Login to your account</Text>
