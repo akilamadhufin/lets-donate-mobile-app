@@ -16,6 +16,45 @@ export default function App() {
   const [registerLoading, setRegisterLoading] = useState(false);
   const [registerError, setRegisterError] = useState('');
 
+
+    // Registration function
+  const handleRegister = async (formData) => {
+    try {
+      setRegisterLoading(true);
+      setRegisterError('');
+      
+      const response = await fetch(`${SERVER_URL}/users`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: Object.keys(formData)
+          .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(formData[key])}`)
+          .join('&'),
+      });
+
+      // The server redirects on success or auto-logs in
+      if (response.redirected || response.status === 200) {
+        // Create a user object for the frontend
+        const userData = {
+          email: formData.email,
+          firstname: formData.firstname,
+        };
+        setUser(userData);
+        setIsLoggedIn(true);
+        setShowRegister(false);
+      } else {
+        throw new Error('Registration failed');
+      }
+      
+    } catch (err) {
+      console.error('Registration error:', err);
+      setRegisterError('Registration failed. Please try again.');
+    } finally {
+      setRegisterLoading(false);
+    }
+  };
+
   // Logout function
   const handleLogout = () => {
     setIsLoggedIn(false);
