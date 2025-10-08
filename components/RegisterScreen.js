@@ -136,7 +136,22 @@ const RegisterScreen = ({ onRegister, onBackToLogin, loading, error }) => {
               secureTextEntry
             />
           </View>
-        
+
+            {/* Register Button */}
+          <TouchableOpacity
+            style={[styles.registerButton, (!isFormValid() || loading) && styles.registerButtonDisabled]}
+            onPress={handleRegisterPress}
+            disabled={!isFormValid() || loading}
+          >
+            {loading ? (
+              <ActivityIndicator color="#fff" />
+            ) : (
+              <Text style={styles.registerButtonText}>Register</Text>
+            )}
+          </TouchableOpacity>
+
+                
+          </View>
       </ScrollView>
     </SafeAreaView>
   
