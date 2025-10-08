@@ -29,3 +29,9 @@ const LoginScreen = ({ onLogin, onSignUp, loading, error }) => {
                      </TouchableOpacity>
                      <Text style={styles.loginTitle}>Login</Text>
                    </View>
+            {/* Logo/Icon */}
+                           <View style={styles.logoContainer}>
+                             <View style={styles.logoIcon}>
+                               <Text style={styles.heartIcon}>💚</Text>
+                             </View>
+                           </View>
