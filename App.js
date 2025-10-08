@@ -55,6 +55,18 @@ export default function App() {
     }
   };
 
+
+  // Navigation functions for registration
+const handleShowRegister = () => {
+  setShowRegister(true);
+  setLoginError('');
+};
+
+  const handleBackToLogin = () => {
+  setShowRegister(false);
+  setRegisterError('');
+};
+
   // Logout function
   const handleLogout = () => {
     setIsLoggedIn(false);
