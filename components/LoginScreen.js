@@ -63,3 +63,8 @@ const LoginScreen = ({ onLogin, onSignUp, loading, error }) => {
                                   secureTextEntry
                                 />
                               </View>
+
+                /* Error Message */}
+                          {error ? (
+                            <Text style={styles.errorMessage}>{error}</Text>
+                          ) : null}
