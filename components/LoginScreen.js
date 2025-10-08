@@ -81,3 +81,16 @@ const LoginScreen = ({ onLogin, onSignUp, loading, error }) => {
                               <Text style={styles.loginButtonText}>Login</Text>
                             )}
                           </TouchableOpacity>
+
+                          {/* Sign Up Link */}
+                                    <View style={styles.signupContainer}>
+                                      <Text style={styles.signupText}>Don't have an account? </Text>
+                                      <TouchableOpacity onPress={onSignUp}>
+                                        <Text style={styles.signupLink}>Sign up</Text>
+                                      </TouchableOpacity>
+                                    </View>
+                                  </View>
+                                </View>
+                              </SafeAreaView>
+                            );
+                          };
