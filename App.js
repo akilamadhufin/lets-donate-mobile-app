@@ -4,15 +4,74 @@ import { StatusBar } from 'expo-status-bar';
 import { Text,View } from 'react-native';
 
 import HomeScreen from './components/HomeScreen';
-
+import RegisterScreen from './components/RegisterScreen';
 
 export default function App() {
 
 // useState for authentication
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
+  
   const [loginLoading, setLoginLoading] = useState(false);
   const [loginError, setLoginError] = useState('');
+
+  // Registration state and error
+  const [showRegister, setShowRegister] = useState(false);
+  const [registerLoading, setRegisterLoading] = useState(false);
+  const [registerError, setRegisterError] = useState('');
+
+
+    // Registration function
+  const handleRegister = async (formData) => {
+    try {
+      setRegisterLoading(true);
+      setRegisterError('');
+      
+      const response = await fetch(`${SERVER_URL}/users`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: Object.keys(formData)
+          .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(formData[key])}`)
+          .join('&'),
+      });
+
+      // The server redirects on success or auto-logs in
+      if (response.redirected || response.status === 200) {
+        // Create a user object for the frontend
+        const userData = {
+          email: formData.email,
+          firstname: formData.firstname,
+        };
+        setUser(userData);
+        setIsLoggedIn(true);
+        setShowRegister(false);
+      } else {
+        throw new Error('Registration failed');
+      }
+      
+    } catch (err) {
+      console.error('Registration error:', err);
+      setRegisterError('Registration failed. Please try again.');
+    } finally {
+      setRegisterLoading(false);
+    }
+  };
+
+
+  // Navigation functions for registration
+const handleShowRegister = () => {
+  setShowRegister(true);
+  setLoginError('');
+};
+
+  const handleBackToLogin = () => {
+  setShowRegister(false);
+  setRegisterError('');
+};
+
+
   // Logout function
   const handleLogout = () => {
     setIsLoggedIn(false);
@@ -38,22 +97,24 @@ export default function App() {
   if (isLoggedIn) {
     return <HomeScreen user={user} onLogout={handleLogout} />;
   }
-  // Show login/register screen if not logged in
+  // Show registration screen if not logged in
+  if (showRegister) {
+    return (
+      <RegisterScreen
+        onRegister={handleRegister}
+        onBackToLogin={handleBackToLogin}
+        loading={registerLoading}
+        error={registerError}
+      />
+    );
+  }
+
   return (
-    <View>
-      <StatusBar style="auto" />
-      {/* Add your login/register UI here */}
-      <Text>Welcome! Please log in or register.</Text>
-    </View>
+    <LoginScreen
+      onLogin={handleLogin}
+      onSignUp={handleShowRegister}
+      loading={loginLoading}
+      error={loginError}
+    />
   );
 }
-
-// Show login screen (default)
-return (
-  <LoginScreen 
-    onLogin={handleLogin}
-    onSignUp={handleShowRegister}
-    loading={loginLoading}
-    error={loginError}
-  />
-);
