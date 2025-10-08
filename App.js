@@ -11,7 +11,8 @@ export default function App() {
 // useState for authentication
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
-
+  const [loginLoading, setLoginLoading] = useState(false);
+  const [loginError, setLoginError] = useState('');
   // Logout function
   const handleLogout = () => {
     setIsLoggedIn(false);
