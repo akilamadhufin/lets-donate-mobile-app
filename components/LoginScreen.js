@@ -52,3 +52,14 @@ const LoginScreen = ({ onLogin, onSignUp, loading, error }) => {
                           autoCapitalize="none"
                         />
                       </View>
+
+                         <View style={styles.inputContainer}>
+                                <TextInput
+                                  style={styles.input}
+                                  placeholder="Password"
+                                  placeholderTextColor="#999"
+                                  value={password}
+                                  onChangeText={setPassword}
+                                  secureTextEntry
+                                />
+                              </View>
