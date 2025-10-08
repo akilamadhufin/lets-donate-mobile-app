@@ -22,7 +22,19 @@ const RegisterScreen = ({ onRegister, onBackToLogin, loading, error }) => {
           </TouchableOpacity>
           <Text style={styles.title}>Sign up</Text>
         </View>
-  
+        {/* Logo*/}
+          <View style={styles.logoContainer}>
+          <View style={styles.logoIcon}>
+            <Text style={styles.heartIcon}>💚</Text>
+          </View>
+          <View style={styles.handIcon}>
+            <Text style={styles.handEmoji}>🤲</Text>
+          </View>
+        </View>
+
+        {/* Welcome Text */}
+        <Text style={styles.welcomeTitle}>Welcome to Let's Donate</Text>
+        <Text style={styles.welcomeSubtitle}>Register here</Text>
         
       </ScrollView>
     </SafeAreaView>
