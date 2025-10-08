@@ -68,11 +68,17 @@ export default function App() {
   }
   // Show login/register screen if not logged in
   return (
-    <View>
-      <StatusBar style="auto" />
-      {/* Add your login/register UI here */}
-      <Text>Welcome! Please log in or register.</Text>
-    </View>
+  // Show registration screen
+  if (showRegister) {
+    return (
+      <RegisterScreen 
+        onRegister={handleRegister}
+        onBackToLogin={handleBackToLogin}
+        loading={registerLoading}
+        error={registerError}
+      />
+    );
+  }
   );
 }
 
