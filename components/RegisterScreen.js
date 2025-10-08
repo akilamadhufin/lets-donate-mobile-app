@@ -29,6 +29,12 @@ const RegisterScreen = ({ onRegister, onBackToLogin, loading, error }) => {
     }
   };
 
+  //function isFormValid checks if all required registration fields are filled
+    const isFormValid = () => {
+    const { firstname, lastname, email, contactnumber, address, password } = formData;
+    return firstname && lastname && email && contactnumber && address && password;
+  };
+
   return(
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
