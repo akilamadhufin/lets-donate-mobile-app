@@ -43,6 +43,99 @@ const RegisterScreen = ({ onRegister, onBackToLogin, loading, error }) => {
         {/* Welcome Text */}
         <Text style={styles.welcomeTitle}>Welcome to Let's Donate</Text>
         <Text style={styles.welcomeSubtitle}>Register here</Text>
+
+
+          {/* Registration Form */}
+        <View style={styles.formContainer}>
+          {/* First Name */}
+          <View style={styles.inputContainer}>
+            <Text style={styles.inputLabel}>
+              First Name <Text style={styles.required}>*</Text>
+            </Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Enter your first name"
+              placeholderTextColor="#999"
+              value={formData.firstname}
+              onChangeText={(value) => handleInputChange('firstname', value)}
+            />
+          </View>
+
+          {/* Last Name */}
+          <View style={styles.inputContainer}>
+            <Text style={styles.inputLabel}>
+              Last Name <Text style={styles.required}>*</Text>
+            </Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Enter your last name"
+              placeholderTextColor="#999"
+              value={formData.lastname}
+              onChangeText={(value) => handleInputChange('lastname', value)}
+            />
+          </View>
+
+          {/* Email */}
+          <View style={styles.inputContainer}>
+            <Text style={styles.inputLabel}>
+              Email <Text style={styles.required}>*</Text>
+            </Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Enter your email"
+              placeholderTextColor="#999"
+              value={formData.email}
+              onChangeText={(value) => handleInputChange('email', value)}
+              keyboardType="email-address"
+              autoCapitalize="none"
+            />
+          </View>
+
+          {/* Contact Number */}
+          <View style={styles.inputContainer}>
+            <Text style={styles.inputLabel}>
+              Contact Number <Text style={styles.required}>*</Text>
+            </Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Enter your contact number"
+              placeholderTextColor="#999"
+              value={formData.contactnumber}
+              onChangeText={(value) => handleInputChange('contactnumber', value)}
+              keyboardType="phone-pad"
+            />
+          </View>
+
+          {/* Address */}
+          <View style={styles.inputContainer}>
+            <Text style={styles.inputLabel}>
+              Address <Text style={styles.required}>*</Text>
+            </Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Enter your address"
+              placeholderTextColor="#999"
+              value={formData.address}
+              onChangeText={(value) => handleInputChange('address', value)}
+              multiline
+              numberOfLines={2}
+            />
+          </View>
+
+          {/* Password */}
+          <View style={styles.inputContainer}>
+            <Text style={styles.inputLabel}>
+              Password <Text style={styles.required}>*</Text>
+            </Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Enter your password"
+              placeholderTextColor="#999"
+              value={formData.password}
+              onChangeText={(value) => handleInputChange('password', value)}
+              secureTextEntry
+            />
+          </View>
         
       </ScrollView>
     </SafeAreaView>
