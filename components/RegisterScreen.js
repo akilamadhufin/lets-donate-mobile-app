@@ -152,6 +152,12 @@ const RegisterScreen = ({ onRegister, onBackToLogin, loading, error }) => {
             />
           </View>
 
+          {/* Error Message */}
+          {error ? (
+            <Text style={styles.errorMessage}>{error}</Text>
+          ) : null}
+
+
             {/* Register Button */}
           <TouchableOpacity
             style={[styles.registerButton, (!isFormValid() || loading) && styles.registerButtonDisabled]}
