@@ -207,7 +207,7 @@ const styles = StyleSheet.create({
     color: '#333',
     flex: 1,
     textAlign: 'center',
-    marginRight: 44, // Compensate for back button width
+    marginRight: 44,
   },
   logoContainer: {
     alignItems: 'center',
