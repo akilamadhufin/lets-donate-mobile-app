@@ -173,6 +173,105 @@ const styles = StyleSheet.create({
     paddingTop: 20,
     paddingBottom: 30,
   },
-
+    backButton: {
+    marginRight: 20,
+  },
+  backArrow: {
+    fontSize: 24,
+    color: '#00C6AE',
+  },
+  title: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#333',
+    flex: 1,
+    textAlign: 'center',
+    marginRight: 44, // Compensate for back button width
+  },
+  logoContainer: {
+    alignItems: 'center',
+    marginVertical: 30,
+    position: 'relative',
+  },
+  logoIcon: {
+    width: 80,
+    height: 80,
+    backgroundColor: '#00C6AE',
+    borderRadius: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  heartIcon: {
+    fontSize: 40,
+    color: '#fff',
+  },
+  handIcon: {
+    position: 'absolute',
+    bottom: -10,
+    left: '60%',
+  },
+  handEmoji: {
+    fontSize: 35,
+    color: '#00C6AE',
+  },
+  welcomeTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#00C6AE',
+    textAlign: 'center',
+    marginBottom: 8,
+  },
+  welcomeSubtitle: {
+    fontSize: 16,
+    color: '#666',
+    textAlign: 'center',
+    marginBottom: 30,
+  },
+  formContainer: {
+    flex: 1,
+  },
+  inputContainer: {
+    marginBottom: 16,
+  },
+  inputLabel: {
+    fontSize: 14,
+    color: '#333',
+    marginBottom: 8,
+    fontWeight: '500',
+  },
+  required: {
+    color: '#ff4444',
+  },
+  input: {
+    backgroundColor: '#f5f5f5',
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    fontSize: 16,
+    color: '#333',
+    minHeight: 50,
+  },
+  errorMessage: {
+    color: '#ff4444',
+    fontSize: 14,
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+  registerButton: {
+    backgroundColor: '#00C6AE',
+    borderRadius: 12,
+    paddingVertical: 16,
+    alignItems: 'center',
+    marginTop: 20,
+  },
+  registerButtonDisabled: {
+    backgroundColor: '#cccccc',
+  },
+  registerButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
   });
 export default RegisterScreen;
