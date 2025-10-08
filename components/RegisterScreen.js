@@ -10,7 +10,15 @@ const RegisterScreen = ({ onRegister, onBackToLogin, loading, error }) => {
     contactnumber: '',
     address: '',
     password: '',
-  })
+  });
+
+  // input handler for form fields
+  const handleInputChange = (field, value) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
 
   return(
     <SafeAreaView style={styles.container}>
