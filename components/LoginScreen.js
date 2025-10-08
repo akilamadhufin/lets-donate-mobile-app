@@ -68,3 +68,16 @@ const LoginScreen = ({ onLogin, onSignUp, loading, error }) => {
                           {error ? (
                             <Text style={styles.errorMessage}>{error}</Text>
                           ) : null}
+
+                {/* Login Button */}
+                          <TouchableOpacity
+                            style={[styles.loginButton, loading && styles.loginButtonDisabled]}
+                            onPress={handleLoginPress}
+                            disabled={loading || !email || !password}
+                          >
+                            {loading ? (
+                              <ActivityIndicator color="#fff" />
+                            ) : (
+                              <Text style={styles.loginButtonText}>Login</Text>
+                            )}
+                          </TouchableOpacity>
