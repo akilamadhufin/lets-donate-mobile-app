@@ -38,3 +38,17 @@ const LoginScreen = ({ onLogin, onSignUp, loading, error }) => {
             {/* Welcome Text */}
                          <Text style={styles.welcomeTitle}>Welcome Back</Text>
                         <Text style={styles.welcomeSubtitle}>Login to your account</Text>
+
+            {/* Login Form */}
+                    <View style={styles.formContainer}>
+                      <View style={styles.inputContainer}>
+                        <TextInput
+                          style={styles.input}
+                          placeholder="Email"
+                          placeholderTextColor="#999"
+                          value={email}
+                          onChangeText={setEmail}
+                          keyboardType="email-address"
+                          autoCapitalize="none"
+                        />
+                      </View>
