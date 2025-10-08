@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import LoginScreen from './components/LoginScreen';
 import { StatusBar } from 'expo-status-bar';
 import { Text,View } from 'react-native';
 
