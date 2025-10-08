@@ -20,6 +20,15 @@ const RegisterScreen = ({ onRegister, onBackToLogin, loading, error }) => {
     }));
   };
 
+  // Handle register button
+  const handleRegisterPress = () => {
+    // Check if all fields are filled
+    const { firstname, lastname, email, contactnumber, address, password } = formData;
+    if (firstname && lastname && email && contactnumber && address && password) {
+      onRegister(formData);
+    }
+  };
+
   return(
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
