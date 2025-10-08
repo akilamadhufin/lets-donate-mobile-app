@@ -48,3 +48,12 @@ export default function App() {
   );
 }
 
+// Show login screen (default)
+return (
+  <LoginScreen 
+    onLogin={handleLogin}
+    onSignUp={handleShowRegister}
+    loading={loginLoading}
+    error={loginError}
+  />
+);
