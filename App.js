@@ -3,7 +3,7 @@ import { StatusBar } from 'expo-status-bar';
 import { Text,View } from 'react-native';
 
 import HomeScreen from './components/HomeScreen';
-
+import RegisterScreen from './components/RegisterScreen';
 
 export default function App() {
 
