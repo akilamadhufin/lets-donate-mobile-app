@@ -38,7 +38,7 @@ export default function App() {
       });
 
       // The server redirects on success
-  if (response.redirected || response.status === 200 || response.status === 201) {
+  if (response.redirected || response.status === 200) {
 
         const userData = {
           email: formData.email,
