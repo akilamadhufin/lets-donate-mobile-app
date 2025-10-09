@@ -85,9 +85,9 @@ const handleShowRegister = () => {
       const response = await fetch(`${SERVER_URL}/login`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
+          'Content-Type': 'application/json',
         },
-        body: `email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`,
+        body: JSON.stringify({ email, password }),
       });
 
       // The server redirects on success, so we check for redirect or success status
