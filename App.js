@@ -40,7 +40,7 @@ export default function App() {
       });
 
       // The server redirects on success or auto-logs in
-      if (response.redirected || response.status === 200) {
+  if (response.redirected || response.status === 200 || response.status === 201) {
         // Create a user object for the frontend
         const userData = {
           email: formData.email,
