@@ -32,16 +32,14 @@ export default function App() {
       const response = await fetch(`${SERVER_URL}/users`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
+          'Content-Type': 'application/json',
         },
-        body: Object.keys(formData)
-          .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(formData[key])}`)
-          .join('&'),
+        body: JSON.stringify(formData),
       });
 
-      // The server redirects on success or auto-logs in
+      // The server redirects on success
   if (response.redirected || response.status === 200 || response.status === 201) {
-        // Create a user object for the frontend
+
         const userData = {
           email: formData.email,
           firstname: formData.firstname,
@@ -94,7 +92,7 @@ const handleShowRegister = () => {
 
       // The server redirects on success, so we check for redirect or success status
       if (response.redirected || response.status === 200) {
-        // Create a user object for the frontend (since server doesn't return JSON)
+        
         const userData = {
           email: email,
           firstname: email.split('@')[0], // Extract firstname from email
