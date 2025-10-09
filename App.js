@@ -32,16 +32,14 @@ export default function App() {
       const response = await fetch(`${SERVER_URL}/users`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
+          'Content-Type': 'application/json',
         },
-        body: Object.keys(formData)
-          .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(formData[key])}`)
-          .join('&'),
+        body: JSON.stringify(formData),
       });
 
-      // The server redirects on success or auto-logs in
-  if (response.redirected || response.status === 200 || response.status === 201) {
-        // Create a user object for the frontend
+      // The server redirects on success
+  if (response.redirected || response.status === 200) {
+
         const userData = {
           email: formData.email,
           firstname: formData.firstname,
@@ -85,19 +83,19 @@ const handleShowRegister = () => {
       setLoginLoading(true);
       setLoginError('');
       const response = await fetch(`${SERVER_URL}/login`, {
-        method: 'POST',
+        method: 'POST',  // in here we use POST instead of GET to enhance security. if GET is used, login credentials are exposed in the URL
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
+          'Content-Type': 'application/json',
         },
-        body: `email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`,
+        body: JSON.stringify({ email, password }),
       });
 
       // The server redirects on success, so we check for redirect or success status
       if (response.redirected || response.status === 200) {
-        // Create a user object for the frontend (since server doesn't return JSON)
+        
         const userData = {
           email: email,
-          firstname: email.split('@')[0], // Extract firstname from email
+          firstname: email.split('@')[0], // Extract firstname from email and it will be displayed in the homescreen
         };
         setUser(userData);
         setIsLoggedIn(true);

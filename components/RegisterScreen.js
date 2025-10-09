@@ -14,10 +14,7 @@ const RegisterScreen = ({ onRegister, onBackToLogin, loading, error }) => {
 
   // input handler for form fields
   const handleInputChange = (field, value) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: value
-    }));
+    setFormData(prev => ({...prev, [field]: value}));
   };
 
   // Handle register button
