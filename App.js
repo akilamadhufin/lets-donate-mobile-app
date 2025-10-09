@@ -83,7 +83,7 @@ const handleShowRegister = () => {
       setLoginLoading(true);
       setLoginError('');
       const response = await fetch(`${SERVER_URL}/login`, {
-        method: 'POST',
+        method: 'POST',  // in here we use POST instead of GET to enhance security. if GET is used, login credentials are exposed in the URL
         headers: {
           'Content-Type': 'application/json',
         },
@@ -95,7 +95,7 @@ const handleShowRegister = () => {
         
         const userData = {
           email: email,
-          firstname: email.split('@')[0], // Extract firstname from email
+          firstname: email.split('@')[0], // Extract firstname from email and it will be displayed in the homescreen
         };
         setUser(userData);
         setIsLoggedIn(true);
