@@ -1,14 +1,56 @@
 import React, { useState } from 'react';
-import {View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator,} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
+import { useRouter } from 'expo-router';
 
-const LoginScreen = ({ onLogin, onSignUp, loading, error }) => {
+const SERVER_URL = 'http://10.0.2.2:3000';
+
+export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const router = useRouter();
 
-  const handleLoginPress = () => {
+  const handleSignUpPress = () => {
+    router.push('/register');
+  };
+
+  const handleLoginPress = async () => {
     if (email && password) {
-      onLogin(email, password);
+      setLoading(true);
+      setError('');
+      try {
+        const response = await fetch(`${SERVER_URL}/login`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ email, password }),
+        });
+        const text = await response.text();
+        let data;
+        try {
+          data = JSON.parse(text);
+        } catch {
+          data = text;
+        }
+        console.log('Login response:', response.status, data);
+        if (response.status === 200) {
+          setError('');
+          const userData = {
+            email,
+            firstname: email.split('@')[0],
+          };
+          router.replace({ pathname: '/', params: { user: JSON.stringify(userData) } });
+        } else {
+          setError(data?.error || 'Invalid email or password');
+        }
+      } catch (err) {
+        setError(err.message || 'Invalid email or password');
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
@@ -17,9 +59,6 @@ const LoginScreen = ({ onLogin, onSignUp, loading, error }) => {
       <View style={styles.loginContent}>
         {/* Header */}
         <View style={styles.loginHeader}>
-          <TouchableOpacity style={styles.backButton}>
-            <Text style={styles.backArrow}>←</Text>
-          </TouchableOpacity>
           <Text style={styles.loginTitle}>Login</Text>
         </View>
 
@@ -33,13 +72,6 @@ const LoginScreen = ({ onLogin, onSignUp, loading, error }) => {
         {/* Welcome Text */}
         <Text style={styles.welcomeTitle}>Welcome Back</Text>
         <Text style={styles.welcomeSubtitle}>Login to your account</Text>
-        
-        {/* Demo Credentials
-        <View style={styles.demoCredentials}>
-          <Text style={styles.demoTitle}>Demo Credentials:</Text>
-          <Text style={styles.demoText}>Email: test@gmail.com</Text>
-          <Text style={styles.demoText}>Password: admin123</Text>
-        </View> */}
 
         {/* Login Form */}
         <View style={styles.formContainer}>
@@ -85,17 +117,17 @@ const LoginScreen = ({ onLogin, onSignUp, loading, error }) => {
           </TouchableOpacity>
 
           {/* Sign Up Link */}
-          <View style={styles.signupContainer}>
-            <Text style={styles.signupText}>Don't have an account? </Text>
-            <TouchableOpacity onPress={onSignUp}>
-              <Text style={styles.signupLink}>Sign up</Text>
+          <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+            <Text style={{ fontSize: 14, color: '#666' }}>Don't have an account? </Text>
+            <TouchableOpacity onPress={handleSignUpPress}>
+              <Text style={{ fontSize: 14, color: '#00C6AE', fontWeight: '600' }}>Sign up</Text>
             </TouchableOpacity>
           </View>
         </View>
       </View>
     </SafeAreaView>
   );
-};
+}
 
 const styles = StyleSheet.create({
   loginContainer: {
@@ -112,20 +144,12 @@ const styles = StyleSheet.create({
     paddingTop: 20,
     paddingBottom: 30,
   },
-  backButton: {
-    marginRight: 20,
-  },
-  backArrow: {
-    fontSize: 24,
-    color: '#00C6AE',
-  },
   loginTitle: {
     fontSize: 18,
     fontWeight: '600',
     color: '#333',
     flex: 1,
     textAlign: 'center',
-    marginRight: 44,
   },
   logoContainer: {
     alignItems: 'center',
@@ -157,25 +181,6 @@ const styles = StyleSheet.create({
     color: '#666',
     textAlign: 'center',
     marginBottom: 40,
-  },
-  demoCredentials: {
-    backgroundColor: '#f0f8ff',
-    padding: 12,
-    borderRadius: 8,
-    marginBottom: 20,
-    borderLeftWidth: 3,
-    borderLeftColor: '#00C6AE',
-  },
-  demoTitle: {
-    fontSize: 14,
-    fontWeight: 'bold',
-    color: '#00C6AE',
-    marginBottom: 4,
-  },
-  demoText: {
-    fontSize: 12,
-    color: '#666',
-    fontFamily: 'monospace',
   },
   formContainer: {
     flex: 1,
@@ -212,20 +217,4 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
-  signupContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  signupText: {
-    fontSize: 14,
-    color: '#666',
-  },
-  signupLink: {
-    fontSize: 14,
-    color: '#00C6AE',
-    fontWeight: '600',
-  },
 });
-
-export default LoginScreen;

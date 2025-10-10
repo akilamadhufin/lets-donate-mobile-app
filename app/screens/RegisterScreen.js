@@ -1,8 +1,14 @@
+
+
 import React, { useState } from 'react';
 import {View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator, ScrollView,} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-const RegisterScreen = ({ onRegister, onBackToLogin, loading, error }) => {
+import { useRouter } from 'expo-router';
+
+const SERVER_URL = 'http://10.0.2.2:3000';
+
+const RegisterScreen = () => {
   const [formData, setFormData] = useState({
     firstname: '',
     lastname: '',
@@ -11,25 +17,43 @@ const RegisterScreen = ({ onRegister, onBackToLogin, loading, error }) => {
     address: '',
     password: '',
   });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const router = useRouter();
 
-  // input handler for form fields
   const handleInputChange = (field, value) => {
     setFormData(prev => ({...prev, [field]: value}));
   };
 
-  // Handle register button
-  const handleRegisterPress = () => {
-    // Check if all fields are filled
-    const { firstname, lastname, email, contactnumber, address, password } = formData;
-    if (firstname && lastname && email && contactnumber && address && password) {
-      onRegister(formData);
-    }
-  };
-
-  //function isFormValid checks if all required registration fields are filled
-    const isFormValid = () => {
+  const isFormValid = () => {
     const { firstname, lastname, email, contactnumber, address, password } = formData;
     return firstname && lastname && email && contactnumber && address && password;
+  };
+
+  const handleRegisterPress = async () => {
+    const { firstname, lastname, email, contactnumber, address, password } = formData;
+    if (!isFormValid()) return;
+    setLoading(true);
+    setError('');
+    try {
+      const response = await fetch(`${SERVER_URL}/users`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+      if (response.ok) {
+        // If backend logs in user automatically, redirect to home
+        router.replace({ pathname: '/', params: { user: JSON.stringify({ firstname, email }) } });
+      } else {
+        setError('Registration failed.');
+      }
+    } catch (err) {
+      setError('Registration failed.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return(
@@ -37,7 +61,7 @@ const RegisterScreen = ({ onRegister, onBackToLogin, loading, error }) => {
       <ScrollView contentContainerStyle={styles.scrollContent}>
         {/* Header */}
        <View style={styles.header}>
-          <TouchableOpacity style={styles.backButton} onPress={onBackToLogin}>
+          <TouchableOpacity style={styles.backButton} onPress={() => router.replace('/login')}>
             <Text style={styles.backArrow}>←</Text>
           </TouchableOpacity>
           <Text style={styles.title}>Sign up</Text>
@@ -56,8 +80,7 @@ const RegisterScreen = ({ onRegister, onBackToLogin, loading, error }) => {
         <Text style={styles.welcomeTitle}>Welcome to Let's Donate</Text>
         <Text style={styles.welcomeSubtitle}>Register here</Text>
 
-
-          {/* Registration Form */}
+        {/* Registration Form */}
         <View style={styles.formContainer}>
           {/* First Name */}
           <View style={styles.inputContainer}>
@@ -154,8 +177,7 @@ const RegisterScreen = ({ onRegister, onBackToLogin, loading, error }) => {
             <Text style={styles.errorMessage}>{error}</Text>
           ) : null}
 
-
-            {/* Register Button */}
+          {/* Register Button */}
           <TouchableOpacity
             style={[styles.registerButton, (!isFormValid() || loading) && styles.registerButtonDisabled]}
             onPress={handleRegisterPress}
@@ -167,14 +189,11 @@ const RegisterScreen = ({ onRegister, onBackToLogin, loading, error }) => {
               <Text style={styles.registerButtonText}>Register</Text>
             )}
           </TouchableOpacity>
-
-                
-          </View>
+        </View>
       </ScrollView>
     </SafeAreaView>
-  
   );
-  };
+};
 const styles = StyleSheet.create({
   container: {
     flex: 1,
