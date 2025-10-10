@@ -12,6 +12,10 @@ export default function LoginPage() {
   const [error, setError] = useState('');
   const router = useRouter();
 
+  const handleSignUpPress = () => {
+    router.push('/register');
+  };
+
   const handleLoginPress = async () => {
     if (email && password) {
       setLoading(true);
@@ -111,6 +115,14 @@ export default function LoginPage() {
               <Text style={styles.loginButtonText}>Login</Text>
             )}
           </TouchableOpacity>
+
+          {/* Sign Up Link */}
+          <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+            <Text style={{ fontSize: 14, color: '#666' }}>Don't have an account? </Text>
+            <TouchableOpacity onPress={handleSignUpPress}>
+              <Text style={{ fontSize: 14, color: '#00C6AE', fontWeight: '600' }}>Sign up</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
     </SafeAreaView>

@@ -1,20 +1,29 @@
-
-import React, { useState } from 'react';
-
+import React, { useState, useEffect } from 'react';
+import { useLocalSearchParams } from 'expo-router';
 import HomeScreen from './screens/HomeScreen';
 import LoginPage from './screens/LoginScreen';
 
 export default function Index() {
-  // Simple authentication state for demonstration
-  const [isLoggedIn, setIsLoggedIn] = useState(true); // Assume logged in for now
-  const [user, setUser] = useState({ firstname: 'User' });
+  const params = useLocalSearchParams();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    if (params.user) {
+      try {
+        const parsedUser = JSON.parse(params.user);
+        setUser(parsedUser);
+        setIsLoggedIn(true);
+      } catch {
+      }
+    }
+  }, [params.user]);
 
   const handleLogout = () => {
     setIsLoggedIn(false);
     setUser(null);
   };
 
-  // If not logged in, show the login page
   if (!isLoggedIn) {
     return <LoginPage />;
   }
