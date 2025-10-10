@@ -92,7 +92,7 @@ const HomeScreen = ({ user: propUser, onLogout }) => {
         source={
           item.image
             ? { uri: `${SERVER_URL}${item.image}` }
-            : require('../assets/images/icon.png')
+            : require('../../assets/images/icon.png')
         }
         style={styles.itemImage}
       />
@@ -101,7 +101,7 @@ const HomeScreen = ({ user: propUser, onLogout }) => {
           <Text style={styles.itemTitle}>{item.title}</Text>
           <View style={[styles.statusBadge, item.available ? styles.statusAvailable : styles.statusUnavailable]}>
             <Text style={[styles.statusText, item.available ? styles.statusTextAvailable : styles.statusTextUnavailable]}>
-              {item.available ? '✓ Available' : '✗ Booked'}
+              {item.available ? '\u2713 Available' : '\u2717 Booked'}
             </Text>
           </View>
         </View>
