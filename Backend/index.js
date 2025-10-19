@@ -2,7 +2,6 @@ const express = require('express');
 const mongoose = require('mongoose');
 const multer = require('multer');
 const path = require('path');
-const exphbs = require('express-handlebars');
 const session = require('express-session');
 require('dotenv').config();
 const nodemailer = require('nodemailer');
