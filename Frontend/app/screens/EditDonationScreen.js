@@ -132,3 +132,7 @@ const EditDonationScreen = () => {
     newExistingImages.splice(index, 1);
     setExistingImages(newExistingImages);
   };
+  // Handle map marker drag
+  const handleMarkerDragEnd = async (e) => {
+    const { latitude, longitude } = e.nativeEvent.coordinate;
+    setMarkerPosition({ latitude, longitude });
