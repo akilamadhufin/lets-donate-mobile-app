@@ -150,6 +150,43 @@ const EditDonationScreen = () => {
       
       if (data.results && data.results.length > 0) {
         const addressComponents = data.results[0].address_components;
+
+        // Parse address components
+        let streetNumber = '';
+        let route = '';
+        
+        addressComponents.forEach(component => {
+          if (component.types.includes('street_number')) {
+            streetNumber = component.long_name;
+          }
+          if (component.types.includes('route')) {
+            route = component.long_name;
+          }
+          if (component.types.includes('locality')) {
+            setCity(component.long_name);
+          }
+          if (component.types.includes('administrative_area_level_1')) {
+            setState(component.long_name);
+          }
+          if (component.types.includes('postal_code')) {
+            setPostalCode(component.long_name);
+          }
+          if (component.types.includes('country')) {
+            setCountry(component.long_name);
+          }
+        });
+        
+        if (streetNumber && route) {
+          setStreet(`${streetNumber} ${route}`);
+        } else if (route) {
+          setStreet(route);
+        }
+      }
+    } catch (error) {
+      console.error('Geocoding error:', error);
+    }
+  };
+
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
