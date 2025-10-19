@@ -360,3 +360,70 @@ const EditDonationScreen = () => {
                             ))}
                           </View>
                         )}
+                        </View>
+                        
+                                {/* Pickup Location */}
+                                <View style={styles.inputGroup}>
+                                  <Text style={styles.label}>Pickup Location</Text>
+                                  <Text style={styles.helperText}>or mark the location in the map</Text>
+                                  
+                                  {/* Map */}
+                                  <View style={styles.mapContainer}>
+                                    <MapView
+                                      style={styles.map}
+                                      region={region}
+                                      onRegionChangeComplete={setRegion}
+                                    >
+                                      <Marker
+                                        coordinate={markerPosition}
+                                        draggable
+                                        onDragEnd={handleMarkerDragEnd}
+                                      />
+                                    </MapView>
+                                  </View>
+                        
+                                  {/* Street Address */}
+                                  <TextInput
+                                    style={styles.input}
+                                    value={street}
+                                    onChangeText={setStreet}
+                                    onBlur={handleAddressChange}
+                                    placeholder="Street address"
+                                  />
+                        
+                                  {/* City */}
+                                  <TextInput
+                                    style={[styles.input, styles.inputSpacing]}
+                                    value={city}
+                                    onChangeText={setCity}
+                                    onBlur={handleAddressChange}
+                                    placeholder="City"
+                                  />
+                        
+                                  {/* State */}
+                                  <TextInput
+                                    style={[styles.input, styles.inputSpacing]}
+                                    value={state}
+                                    onChangeText={setState}
+                                    onBlur={handleAddressChange}
+                                    placeholder="State / Province"
+                                  />
+                        
+                                  {/* Postal Code */}
+                                  <TextInput
+                                    style={[styles.input, styles.inputSpacing]}
+                                    value={postalCode}
+                                    onChangeText={setPostalCode}
+                                    onBlur={handleAddressChange}
+                                    placeholder="Postal Code"
+                                  />
+                        
+                                  {/* Country */}
+                                  <TextInput
+                                    style={[styles.input, styles.inputSpacing]}
+                                    value={country}
+                                    onChangeText={setCountry}
+                                    onBlur={handleAddressChange}
+                                    placeholder="Country"
+                                  />
+                                </View>
