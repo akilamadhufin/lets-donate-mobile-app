@@ -67,3 +67,14 @@ const MyDonationsScreen = ({ user: propUser }) => {
     setRefreshing(true);
     fetchMyDonations(true);
   };
+   // Handle edit donation
+  const handleEdit = (donation) => {
+    // Navigate to edit screen
+    router.push({ 
+      pathname: '/editdonation', 
+      params: { 
+        donation: JSON.stringify(donation),
+        user: JSON.stringify(user)
+      } 
+    });
+  };
