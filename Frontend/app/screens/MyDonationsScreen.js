@@ -31,3 +31,34 @@ const MyDonationsScreen = ({ user: propUser }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
+
+    // Fetch user's donations from server
+  const fetchMyDonations = async (isRefresh = false) => {
+    try {
+      if (!isRefresh) setLoading(true);
+      
+      const actualUserId = user?.userId || user?._id || user;
+      if (!actualUserId) {
+        setError('User not logged in');
+        setLoading(false);
+        return;
+      }
+
+      const response = await fetch(`${SERVER_URL}/api/mydonations/${actualUserId}`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      setDonations(data.data || []);
+      setError(null);
+    } catch (err) {
+      console.error('Error fetching donations:', err);
+      setError('Failed to load your donations. Please check your internet connection.');
+    } finally {
+      if (isRefresh) {
+        setRefreshing(false);
+      } else {
+        setLoading(false);
+      }
+    }
+  };
