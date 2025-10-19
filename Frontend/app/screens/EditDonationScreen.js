@@ -332,3 +332,31 @@ const EditDonationScreen = () => {
                   numberOfLines={4}
                 />
               </View>
+               {/* Category */}
+                      <View style={styles.inputGroup}>
+                        <Text style={styles.label}>Category</Text>
+                        <TouchableOpacity
+                          style={styles.dropdown}
+                          onPress={() => setShowCategoryDropdown(!showCategoryDropdown)}
+                        >
+                          <Text style={category ? styles.dropdownText : styles.dropdownPlaceholder}>
+                            {category || 'Select category'}
+                          </Text>
+                          <Text style={styles.dropdownIcon}>▼</Text>
+                        </TouchableOpacity>
+                        {showCategoryDropdown && (
+                          <View style={styles.dropdownList}>
+                            {categories.map((cat) => (
+                              <TouchableOpacity
+                                key={cat}
+                                style={styles.dropdownItem}
+                                onPress={() => {
+                                  setCategory(cat);
+                                  setShowCategoryDropdown(false);
+                                }}
+                              >
+                                <Text style={styles.dropdownItemText}>{cat}</Text>
+                              </TouchableOpacity>
+                            ))}
+                          </View>
+                        )}
