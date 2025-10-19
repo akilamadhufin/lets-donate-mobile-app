@@ -212,3 +212,17 @@ const MyDonationsScreen = ({ user: propUser }) => {
             {donations.length} {donations.length === 1 ? 'item' : 'items'} donated
           </Text>
         </View>
+
+         {/* Donations List */}
+                <FlatList
+                  data={donations}
+                  renderItem={renderItem}
+                  keyExtractor={(item) => item._id}
+                  contentContainerStyle={[
+                    styles.listContent,
+                    donations.length === 0 && styles.listContentEmpty
+                  ]}
+                  ListEmptyComponent={renderEmptyComponent}
+                  refreshing={refreshing}
+                  onRefresh={onRefresh}
+                />
