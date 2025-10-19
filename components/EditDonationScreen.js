@@ -129,6 +129,12 @@ const EditDonationScreen = () => {
     setImages(newImages);
   };
 
+  // Remove existing image
+  const removeExistingImage = (index) => {
+    const newExistingImages = [...existingImages];
+    newExistingImages.splice(index, 1);
+    setExistingImages(newExistingImages);
+  };
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
