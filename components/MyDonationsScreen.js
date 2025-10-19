@@ -80,6 +80,42 @@ const MyDonationsScreen = ({ user: propUser }) => {
       } 
     });
   };
+// Handle delete donation
+  const handleDelete = (donationId, title) => {
+    Alert.alert(
+      'Delete Donation',
+      `Are you sure you want to delete "${title}"?`,
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'Delete',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              const response = await fetch(`${SERVER_URL}/api/donations/${donationId}`, {
+                method: 'DELETE',
+              });
+
+              const result = await response.json();
+
+              if (result.success) {
+                Alert.alert('Success', 'Donation deleted successfully');
+                fetchMyDonations();
+              } else {
+                Alert.alert('Error', result.message || 'Failed to delete donation');
+              }
+            } catch (error) {
+              console.error('Error deleting donation:', error);
+              Alert.alert('Error', 'An error occurred while deleting the donation');
+            }
+          },
+        },
+      ]
+    );
+  };
 
 const styles = StyleSheet.create({
   container: {
