@@ -258,3 +258,5 @@ const EditDonationScreen = () => {
       formData.append('country', country);
       formData.append('latitude', markerPosition.latitude.toString());
       formData.append('longitude', markerPosition.longitude.toString());
+      // Add existing images that weren't removed
+      formData.append('existingImages', JSON.stringify(existingImages));
