@@ -309,4 +309,14 @@ const EditDonationScreen = () => {
               <View style={styles.header}>
                 <Text style={styles.headerTitle}>Edit the form</Text>
               </View>
+       {/* Item Title */}
+              <View style={styles.inputGroup}>
+                <Text style={styles.label}>Item Title</Text>
+                <TextInput
+                  style={styles.input}
+                  value={title}
+                  onChangeText={setTitle}
+                  placeholder="Enter item title"
+                />
+              </View>
       
