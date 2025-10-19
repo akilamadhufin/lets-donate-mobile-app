@@ -120,3 +120,9 @@ const EditDonationScreen = () => {
       Alert.alert('Error', 'Failed to take photo');
     }
   };
+   // Remove new image
+  const removeImage = (index) => {
+    const newImages = [...images];
+    newImages.splice(index, 1);
+    setImages(newImages);
+  };
