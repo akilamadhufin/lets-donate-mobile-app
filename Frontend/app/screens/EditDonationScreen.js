@@ -126,3 +126,9 @@ const EditDonationScreen = () => {
     newImages.splice(index, 1);
     setImages(newImages);
   };
+   // Remove existing image
+  const removeExistingImage = (index) => {
+    const newExistingImages = [...existingImages];
+    newExistingImages.splice(index, 1);
+    setExistingImages(newExistingImages);
+  };
