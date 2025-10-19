@@ -180,3 +180,6 @@ const EditDonationScreen = () => {
       console.error('Geocoding error:', error);
     }
   };
+// Handle location input change
+  const handleAddressChange = async () => {
+    const fullAddress = `${street}, ${city}, ${state} ${postalCode}, ${country}`;
