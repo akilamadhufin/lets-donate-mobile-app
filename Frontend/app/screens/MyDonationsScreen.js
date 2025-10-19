@@ -114,3 +114,8 @@ const MyDonationsScreen = ({ user: propUser }) => {
       ]
     );
   };
+  
+  // Fetch data when component loads
+  useEffect(() => {
+    fetchMyDonations();
+  }, []);
