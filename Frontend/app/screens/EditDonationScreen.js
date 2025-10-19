@@ -462,4 +462,24 @@ const EditDonationScreen = () => {
                           ))}
                         </View>
                       )}
-            
+            /* Display new images */}
+                      {images.length > 0 && (
+                        <View style={styles.imagePreviewContainer}>
+                          <Text style={styles.existingImagesLabel}>New Images:</Text>
+                          {images.map((img, index) => (
+                            <View key={`new-${index}`} style={styles.imagePreview}>
+                              <Image
+                                source={{ uri: img.uri }}
+                                style={styles.previewImage}
+                              />
+                              <TouchableOpacity
+                                style={styles.removeImageBtn}
+                                onPress={() => removeImage(index)}
+                              >
+                                <Text style={styles.removeImageText}>✕</Text>
+                              </TouchableOpacity>
+                            </View>
+                          ))}
+                        </View>
+                      )}
+                    </View>
