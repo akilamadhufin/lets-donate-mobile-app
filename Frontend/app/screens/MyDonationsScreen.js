@@ -12,3 +12,5 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import BottomNav from '../components/BottomNav';
+
+const SERVER_URL = 'http://10.0.2.2:3000';
