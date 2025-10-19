@@ -136,3 +136,79 @@ const MyDonationsScreen = ({ user: propUser }) => {
       </TouchableOpacity>
     </View>
   );
+// DonationItem component for FlatList
+  const DonationItem = ({ item }) => {
+    const images = Array.isArray(item.image) ? item.image : (item.image ? [item.image] : []);
+    const mainImg = images.length > 0 ? `${SERVER_URL}${images[0]}` : null;
+
+    return (
+      <View style={styles.donationCard}>
+        <View style={styles.cardContent}>
+          <Image
+            source={mainImg ? { uri: mainImg } : require('../../assets/images/icon.png')}
+            style={styles.itemImage}
+          />
+          <View style={styles.itemDetails}>
+            <Text style={styles.itemTitle}>{item.title}</Text>
+            <Text style={styles.itemLocation}>Pickup from {item.city}</Text>
+            <View style={[styles.statusBadge, item.available ? styles.statusAvailable : styles.statusBooked]}>
+              <Text style={[styles.statusText, item.available ? styles.statusTextAvailable : styles.statusTextBooked]}>
+                {item.available ? '✓ Available' : '✗ Booked'}
+              </Text>
+            </View>
+          </View>
+        </View>
+        <View style={styles.actionButtons}>
+          <TouchableOpacity
+            style={styles.editBtn}
+            onPress={() => handleEdit(item)}
+          >
+            <Text style={styles.editBtnText}>Edit</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.deleteBtn}
+            onPress={() => handleDelete(item._id, item.title)}
+          >
+            <Text style={styles.deleteBtnText}>Delete</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    );
+  };
+
+  const renderItem = ({ item }) => <DonationItem item={item} />;
+
+  if (loading) {
+    return (
+      <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
+        <View style={styles.centerContainer}>
+          <ActivityIndicator size="large" color="#00C6A2" />
+          <Text style={styles.loadingText}>Loading your donations...</Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
+  if (error) {
+    return (
+      <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
+        <View style={styles.centerContainer}>
+          <Text style={styles.errorText}>{error}</Text>
+          <TouchableOpacity style={styles.retryBtn} onPress={() => fetchMyDonations()}>
+            <Text style={styles.retryBtnText}>Retry</Text>
+          </TouchableOpacity>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
+  return (
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
+      <View style={styles.container}>
+        {/* Header */}
+        <View style={styles.header}>
+          <Text style={styles.headerTitle}>My Donations</Text>
+          <Text style={styles.headerSubtitle}>
+            {donations.length} {donations.length === 1 ? 'item' : 'items'} donated
+          </Text>
+        </View>
