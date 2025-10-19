@@ -73,3 +73,12 @@ const EditDonationScreen = () => {
     'Kitchen Items',
     'Other'
   ];
+   // Request permissions on mount
+  useEffect(() => {
+    (async () => {
+      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (status !== 'granted') {
+        Alert.alert('Permission Denied', 'Camera roll permissions are required to upload images.');
+      }
+    })();
+  }, []);
