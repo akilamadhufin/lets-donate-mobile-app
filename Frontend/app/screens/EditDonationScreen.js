@@ -99,3 +99,24 @@ const EditDonationScreen = () => {
       Alert.alert('Error', 'Failed to pick images');
     }
   };
+  // Take photo with camera
+  const takePhoto = async () => {
+    try {
+      const { status } = await ImagePicker.requestCameraPermissionsAsync();
+      if (status !== 'granted') {
+        Alert.alert('Permission Denied', 'Camera permissions are required.');
+        return;
+      }
+
+      const result = await ImagePicker.launchCameraAsync({
+        quality: 0.8,
+      });
+
+      if (!result.canceled && result.assets) {
+        setImages([...images, ...result.assets]);
+      }
+    } catch (error) {
+      console.error('Error taking photo:', error);
+      Alert.alert('Error', 'Failed to take photo');
+    }
+  };
