@@ -62,3 +62,8 @@ const MyDonationsScreen = ({ user: propUser }) => {
       }
     }
   };
+    // Handle pull-to-refresh
+  const onRefresh = () => {
+    setRefreshing(true);
+    fetchMyDonations(true);
+  };
