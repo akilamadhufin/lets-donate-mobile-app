@@ -208,3 +208,53 @@ const EditDonationScreen = () => {
       }
     }
   };
+  // Handle form submission
+  const handleSubmit = async () => {
+    // Validation
+    if (!title.trim()) {
+      Alert.alert('Error', 'Please enter an item title');
+      return;
+    }
+    if (!description.trim()) {
+      Alert.alert('Error', 'Please enter a description');
+      return;
+    }
+    if (!category) {
+      Alert.alert('Error', 'Please select a category');
+      return;
+    }
+    if (!street.trim()) {
+      Alert.alert('Error', 'Please enter a street address');
+      return;
+    }
+    if (!city.trim()) {
+      Alert.alert('Error', 'Please enter a city');
+      return;
+    }
+    if (!state.trim()) {
+      Alert.alert('Error', 'Please enter a state');
+      return;
+    }
+    if (!postalCode.trim()) {
+      Alert.alert('Error', 'Please enter a postal code');
+      return;
+    }
+    if (!country.trim()) {
+      Alert.alert('Error', 'Please enter a country');
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const formData = new FormData();
+      formData.append('title', title);
+      formData.append('description', description);
+      formData.append('category', category);
+      formData.append('street', street);
+      formData.append('city', city);
+      formData.append('state', state);
+      formData.append('postalCode', postalCode);
+      formData.append('country', country);
+      formData.append('latitude', markerPosition.latitude.toString());
+      formData.append('longitude', markerPosition.longitude.toString());
