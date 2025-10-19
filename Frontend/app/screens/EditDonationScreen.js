@@ -442,3 +442,24 @@ const EditDonationScreen = () => {
                                               <Text style={styles.imageButtonText}>Take photo</Text>
                                             </TouchableOpacity>
                                           </View>
+                      {/* Display existing images */}
+                      {existingImages.length > 0 && (
+                        <View style={styles.imagePreviewContainer}>
+                          <Text style={styles.existingImagesLabel}>Current Images:</Text>
+                          {existingImages.map((img, index) => (
+                            <View key={`existing-${index}`} style={styles.imagePreview}>
+                              <Image
+                                source={{ uri: `${SERVER_URL}${img}` }}
+                                style={styles.previewImage}
+                              />
+                              <TouchableOpacity
+                                style={styles.removeImageBtn}
+                                onPress={() => removeExistingImage(index)}
+                              >
+                                <Text style={styles.removeImageText}>✕</Text>
+                              </TouchableOpacity>
+                            </View>
+                          ))}
+                        </View>
+                      )}
+            
