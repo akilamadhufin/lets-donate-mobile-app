@@ -116,7 +116,28 @@ const MyDonationsScreen = ({ user: propUser }) => {
       ]
     );
   };
+// Fetch data when component loads
+  useEffect(() => {
+    fetchMyDonations();
+  }, []);
 
+  // Render empty component
+  const renderEmptyComponent = () => (
+    <View style={styles.centerContainer}>
+      <Text style={styles.emptyIcon}>📦</Text>
+      <Text style={styles.emptyText}>No donations yet</Text>
+      <Text style={styles.emptySubtext}>Start donating items to help others!</Text>
+      <TouchableOpacity
+        style={styles.donateBtn}
+        onPress={() => {
+          const actualUserId = user?.userId || user?._id || user;
+          router.push({ pathname: '/donate', params: { userId: actualUserId } });
+        }}
+      >
+        <Text style={styles.donateBtnText}>Donate Now</Text>
+      </TouchableOpacity>
+    </View>
+  );
 const styles = StyleSheet.create({
   container: {
     flex: 1,
