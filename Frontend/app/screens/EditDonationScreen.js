@@ -483,3 +483,26 @@ const EditDonationScreen = () => {
                         </View>
                       )}
                     </View>
+            
+                    {/* Submit Button */}
+                    <TouchableOpacity
+                      style={[styles.submitBtn, loading && styles.submitBtnDisabled]}
+                      onPress={handleSubmit}
+                      disabled={loading}
+                    >
+                      <Text style={styles.submitBtnText}>
+                        {loading ? 'Updating...' : 'Submit'}
+                      </Text>
+                    </TouchableOpacity>
+            
+                    {/* Cancel Button */}
+                    <TouchableOpacity
+                      style={styles.cancelBtn}
+                      onPress={() => router.back()}
+                    >
+                      <Text style={styles.cancelBtnText}>Cancel</Text>
+                    </TouchableOpacity>
+                  </ScrollView>
+                </SafeAreaView>
+              );
+            };
