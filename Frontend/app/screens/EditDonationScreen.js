@@ -320,3 +320,15 @@ const EditDonationScreen = () => {
                 />
               </View>
       
+              {/* Description */}
+              <View style={styles.inputGroup}>
+                <Text style={styles.label}>Description</Text>
+                <TextInput
+                  style={[styles.input, styles.textArea]}
+                  value={description}
+                  onChangeText={setDescription}
+                  placeholder="Enter description"
+                  multiline
+                  numberOfLines={4}
+                />
+              </View>
