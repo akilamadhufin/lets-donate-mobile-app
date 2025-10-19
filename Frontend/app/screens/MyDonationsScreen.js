@@ -226,3 +226,24 @@ const MyDonationsScreen = ({ user: propUser }) => {
                   refreshing={refreshing}
                   onRefresh={onRefresh}
                 />
+
+        {/* Bottom Navigation */}
+        <BottomNav
+          active="Profile"
+          onNavigate={(path) => {
+            const actualUserId = user?.userId || user?._id || user;
+            if (path === '/') {
+              router.push({ pathname: '/', params: { user: JSON.stringify(user) } });
+            } else if (path === '/donate') {
+              router.push({ pathname: '/donate', params: { userId: actualUserId } });
+            } else if (path === '/basket') {
+              router.push({ pathname: '/basket', params: { user: JSON.stringify(user) } });
+            } else if (path === '/profile') {
+              router.push({ pathname: '/profile', params: { user: JSON.stringify(user) } });
+            }
+          }}
+        />
+      </View>
+    </SafeAreaView>
+  );
+};
