@@ -74,7 +74,16 @@ const EditDonationScreen = () => {
     'Other'
   ];
 
-  /
+ // Request permissions on mount
+  useEffect(() => {
+    (async () => {
+      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (status !== 'granted') {
+        Alert.alert('Permission Denied', 'Camera roll permissions are required to upload images.');
+      }
+    })();
+  }, []);
+
 
 const styles = StyleSheet.create({
   container: {
