@@ -16,3 +16,60 @@ import MapView, { Marker } from 'react-native-maps';
 
 const SERVER_URL = 'http://10.0.2.2:3000';
 const GOOGLE_MAPS_API_KEY = 'AIzaSyCWCujwOxd2-jnpkUdx9_ZWFvzpIFjXZ4E';
+
+const EditDonationScreen = () => {
+  const router = useRouter();
+  const params = useLocalSearchParams();
+
+  let donation = null;
+  let user = null;
+
+  if (params.donation) {
+    try {
+      donation = JSON.parse(params.donation);
+    } catch {
+      donation = null;
+    }
+  }
+
+  if (params.user) {
+    try {
+      user = JSON.parse(params.user);
+    } catch {
+      user = null;
+    }
+  }
+
+  const [title, setTitle] = useState(donation?.title || '');
+  const [description, setDescription] = useState(donation?.description || '');
+  const [category, setCategory] = useState(donation?.category || '');
+  const [street, setStreet] = useState(donation?.street || '');
+  const [city, setCity] = useState(donation?.city || '');
+  const [state, setState] = useState(donation?.state || '');
+  const [postalCode, setPostalCode] = useState(donation?.postalCode || '');
+  const [country, setCountry] = useState(donation?.country || '');
+  const [images, setImages] = useState([]);
+  const [existingImages, setExistingImages] = useState(donation?.image || []);
+  const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
+  const [region, setRegion] = useState({
+    latitude: donation?.latitude || 61.4978,
+    longitude: donation?.longitude || 23.7610,
+    latitudeDelta: 0.01,
+    longitudeDelta: 0.01,
+  });
+  const [markerPosition, setMarkerPosition] = useState({
+    latitude: donation?.latitude || 61.4978,
+    longitude: donation?.longitude || 23.7610,
+  });
+  const [loading, setLoading] = useState(false);
+
+  const categories = [
+    'Electronics',
+    'Clothing',
+    'Books',
+    'Furniture',
+    'Toys',
+    'Sports Equipment',
+    'Kitchen Items',
+    'Other'
+  ];
