@@ -74,7 +74,7 @@ const EditDonationScreen = () => {
     'Other'
   ];
 
- // Request permissions on mount
+  // Request permissions on mount
   useEffect(() => {
     (async () => {
       const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -101,6 +101,7 @@ const EditDonationScreen = () => {
       Alert.alert('Error', 'Failed to pick images');
     }
   };
+
   // Take photo with camera
   const takePhoto = async () => {
     try {
@@ -122,7 +123,8 @@ const EditDonationScreen = () => {
       Alert.alert('Error', 'Failed to take photo');
     }
   };
-    // Remove new image
+
+  // Remove new image
   const removeImage = (index) => {
     const newImages = [...images];
     newImages.splice(index, 1);
@@ -135,13 +137,13 @@ const EditDonationScreen = () => {
     newExistingImages.splice(index, 1);
     setExistingImages(newExistingImages);
   };
-  
+
   // Handle map marker drag
   const handleMarkerDragEnd = async (e) => {
     const { latitude, longitude } = e.nativeEvent.coordinate;
     setMarkerPosition({ latitude, longitude });
 
-      // Reverse geocoding to get address
+    // Reverse geocoding to get address
     try {
       const response = await fetch(
         `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${GOOGLE_MAPS_API_KEY}`
@@ -150,7 +152,7 @@ const EditDonationScreen = () => {
       
       if (data.results && data.results.length > 0) {
         const addressComponents = data.results[0].address_components;
-
+        
         // Parse address components
         let streetNumber = '';
         let route = '';
@@ -186,11 +188,12 @@ const EditDonationScreen = () => {
       console.error('Geocoding error:', error);
     }
   };
-   // Handle location input change
+
+  // Handle location input change
   const handleAddressChange = async () => {
     const fullAddress = `${street}, ${city}, ${state} ${postalCode}, ${country}`;
 
- // Geocode the address
+    // Geocode the address
     if (fullAddress.replace(/,/g, '').trim().length > 10) {
       try {
         const response = await fetch(
@@ -215,7 +218,6 @@ const EditDonationScreen = () => {
     }
   };
 
-  
   // Handle form submission
   const handleSubmit = async () => {
     // Validation
@@ -266,6 +268,262 @@ const EditDonationScreen = () => {
       formData.append('country', country);
       formData.append('latitude', markerPosition.latitude.toString());
       formData.append('longitude', markerPosition.longitude.toString());
+
+      // Add existing images that weren't removed
+      formData.append('existingImages', JSON.stringify(existingImages));
+
+      // Add new images
+      images.forEach((image, index) => {
+        const uriParts = image.uri.split('.');
+        const fileType = uriParts[uriParts.length - 1];
+        
+        formData.append('images', {
+          uri: image.uri,
+          name: `photo_${Date.now()}_${index}.${fileType}`,
+          type: `image/${fileType}`,
+        });
+      });
+
+      const response = await fetch(`${SERVER_URL}/api/donations/${donation._id}/update`, {
+        method: 'PUT',
+        body: formData,
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      const result = await response.json();
+
+      if (response.ok && result.success) {
+        Alert.alert('Success', 'Donation updated successfully!', [
+          {
+            text: 'OK',
+            onPress: () => {
+              router.back();
+            },
+          },
+        ]);
+      } else {
+        Alert.alert('Error', result.message || 'Failed to update donation');
+      }
+    } catch (error) {
+      console.error('Error updating donation:', error);
+      Alert.alert('Error', 'An error occurred while updating the donation');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
+      <ScrollView contentContainerStyle={styles.container}>
+        {/* Header */}
+        <View style={styles.header}>
+          <Text style={styles.headerTitle}>Edit the form</Text>
+        </View>
+
+        {/* Item Title */}
+        <View style={styles.inputGroup}>
+          <Text style={styles.label}>Item Title</Text>
+          <TextInput
+            style={styles.input}
+            value={title}
+            onChangeText={setTitle}
+            placeholder="Enter item title"
+          />
+        </View>
+
+        {/* Description */}
+        <View style={styles.inputGroup}>
+          <Text style={styles.label}>Description</Text>
+          <TextInput
+            style={[styles.input, styles.textArea]}
+            value={description}
+            onChangeText={setDescription}
+            placeholder="Enter description"
+            multiline
+            numberOfLines={4}
+          />
+        </View>
+
+        {/* Category */}
+        <View style={styles.inputGroup}>
+          <Text style={styles.label}>Category</Text>
+          <TouchableOpacity
+            style={styles.dropdown}
+            onPress={() => setShowCategoryDropdown(!showCategoryDropdown)}
+          >
+            <Text style={category ? styles.dropdownText : styles.dropdownPlaceholder}>
+              {category || 'Select category'}
+            </Text>
+            <Text style={styles.dropdownIcon}>▼</Text>
+          </TouchableOpacity>
+          {showCategoryDropdown && (
+            <View style={styles.dropdownList}>
+              {categories.map((cat) => (
+                <TouchableOpacity
+                  key={cat}
+                  style={styles.dropdownItem}
+                  onPress={() => {
+                    setCategory(cat);
+                    setShowCategoryDropdown(false);
+                  }}
+                >
+                  <Text style={styles.dropdownItemText}>{cat}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          )}
+        </View>
+
+        {/* Pickup Location */}
+        <View style={styles.inputGroup}>
+          <Text style={styles.label}>Pickup Location</Text>
+          <Text style={styles.helperText}>or mark the location in the map</Text>
+          
+          {/* Map */}
+          <View style={styles.mapContainer}>
+            <MapView
+              style={styles.map}
+              region={region}
+              onRegionChangeComplete={setRegion}
+            >
+              <Marker
+                coordinate={markerPosition}
+                draggable
+                onDragEnd={handleMarkerDragEnd}
+              />
+            </MapView>
+          </View>
+
+          {/* Street Address */}
+          <TextInput
+            style={styles.input}
+            value={street}
+            onChangeText={setStreet}
+            onBlur={handleAddressChange}
+            placeholder="Street address"
+          />
+
+          {/* City */}
+          <TextInput
+            style={[styles.input, styles.inputSpacing]}
+            value={city}
+            onChangeText={setCity}
+            onBlur={handleAddressChange}
+            placeholder="City"
+          />
+
+          {/* State */}
+          <TextInput
+            style={[styles.input, styles.inputSpacing]}
+            value={state}
+            onChangeText={setState}
+            onBlur={handleAddressChange}
+            placeholder="State / Province"
+          />
+
+          {/* Postal Code */}
+          <TextInput
+            style={[styles.input, styles.inputSpacing]}
+            value={postalCode}
+            onChangeText={setPostalCode}
+            onBlur={handleAddressChange}
+            placeholder="Postal Code"
+          />
+
+          {/* Country */}
+          <TextInput
+            style={[styles.input, styles.inputSpacing]}
+            value={country}
+            onChangeText={setCountry}
+            onBlur={handleAddressChange}
+            placeholder="Country"
+          />
+        </View>
+
+        {/* Upload Images */}
+        <View style={styles.inputGroup}>
+          <Text style={styles.label}>Upload Images</Text>
+          
+          <View style={styles.imageButtonsRow}>
+            <TouchableOpacity style={styles.imageButton} onPress={pickImages}>
+              <Text style={styles.imageButtonIcon}>📤</Text>
+              <Text style={styles.imageButtonText}>Upload</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.imageButton} onPress={takePhoto}>
+              <Text style={styles.imageButtonIcon}>📷</Text>
+              <Text style={styles.imageButtonText}>Take photo</Text>
+            </TouchableOpacity>
+          </View>
+
+          {/* Display existing images */}
+          {existingImages.length > 0 && (
+            <View style={styles.imagePreviewContainer}>
+              <Text style={styles.existingImagesLabel}>Current Images:</Text>
+              {existingImages.map((img, index) => (
+                <View key={`existing-${index}`} style={styles.imagePreview}>
+                  <Image
+                    source={{ uri: `${SERVER_URL}${img}` }}
+                    style={styles.previewImage}
+                  />
+                  <TouchableOpacity
+                    style={styles.removeImageBtn}
+                    onPress={() => removeExistingImage(index)}
+                  >
+                    <Text style={styles.removeImageText}>✕</Text>
+                  </TouchableOpacity>
+                </View>
+              ))}
+            </View>
+          )}
+
+          {/* Display new images */}
+          {images.length > 0 && (
+            <View style={styles.imagePreviewContainer}>
+              <Text style={styles.existingImagesLabel}>New Images:</Text>
+              {images.map((img, index) => (
+                <View key={`new-${index}`} style={styles.imagePreview}>
+                  <Image
+                    source={{ uri: img.uri }}
+                    style={styles.previewImage}
+                  />
+                  <TouchableOpacity
+                    style={styles.removeImageBtn}
+                    onPress={() => removeImage(index)}
+                  >
+                    <Text style={styles.removeImageText}>✕</Text>
+                  </TouchableOpacity>
+                </View>
+              ))}
+            </View>
+          )}
+        </View>
+
+        {/* Submit Button */}
+        <TouchableOpacity
+          style={[styles.submitBtn, loading && styles.submitBtnDisabled]}
+          onPress={handleSubmit}
+          disabled={loading}
+        >
+          <Text style={styles.submitBtnText}>
+            {loading ? 'Updating...' : 'Submit'}
+          </Text>
+        </TouchableOpacity>
+
+        {/* Cancel Button */}
+        <TouchableOpacity
+          style={styles.cancelBtn}
+          onPress={() => router.back()}
+        >
+          <Text style={styles.cancelBtnText}>Cancel</Text>
+        </TouchableOpacity>
+      </ScrollView>
+    </SafeAreaView>
+  );
+};
+
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
