@@ -427,3 +427,18 @@ const EditDonationScreen = () => {
                                     placeholder="Country"
                                   />
                                 </View>
+                                 {/* Upload Images */}
+                                        <View style={styles.inputGroup}>
+                                          <Text style={styles.label}>Upload Images</Text>
+                                          
+                                          <View style={styles.imageButtonsRow}>
+                                            <TouchableOpacity style={styles.imageButton} onPress={pickImages}>
+                                              <Text style={styles.imageButtonIcon}>📤</Text>
+                                              <Text style={styles.imageButtonText}>Upload</Text>
+                                            </TouchableOpacity>
+                                
+                                            <TouchableOpacity style={styles.imageButton} onPress={takePhoto}>
+                                              <Text style={styles.imageButtonIcon}>📷</Text>
+                                              <Text style={styles.imageButtonText}>Take photo</Text>
+                                            </TouchableOpacity>
+                                          </View>
