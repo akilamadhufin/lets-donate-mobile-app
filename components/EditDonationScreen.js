@@ -84,6 +84,23 @@ const EditDonationScreen = () => {
     })();
   }, []);
 
+  // Pick images from gallery
+  const pickImages = async () => {
+    try {
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsMultipleSelection: true,
+        quality: 0.8,
+      });
+
+      if (!result.canceled && result.assets) {
+        setImages([...images, ...result.assets]);
+      }
+    } catch (error) {
+      console.error('Error picking images:', error);
+      Alert.alert('Error', 'Failed to pick images');
+    }
+  };
 
 const styles = StyleSheet.create({
   container: {
