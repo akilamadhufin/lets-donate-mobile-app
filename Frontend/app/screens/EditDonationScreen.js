@@ -260,3 +260,53 @@ const EditDonationScreen = () => {
       formData.append('longitude', markerPosition.longitude.toString());
       // Add existing images that weren't removed
       formData.append('existingImages', JSON.stringify(existingImages));
+      / Add new images
+            images.forEach((image, index) => {
+              const uriParts = image.uri.split('.');
+              const fileType = uriParts[uriParts.length - 1];
+              
+              formData.append('images', {
+                uri: image.uri,
+                name: `photo_${Date.now()}_${index}.${fileType}`,
+                type: `image/${fileType}`,
+              });
+            });
+      
+            const response = await fetch(`${SERVER_URL}/api/donations/${donation._id}/update`, {
+              method: 'PUT',
+              body: formData,
+              headers: {
+                'Content-Type': 'multipart/form-data',
+              },
+            });
+      
+            const result = await response.json();
+      
+            if (response.ok && result.success) {
+              Alert.alert('Success', 'Donation updated successfully!', [
+                {
+                  text: 'OK',
+                  onPress: () => {
+                    router.back();
+                  },
+                },
+              ]);
+            } else {
+              Alert.alert('Error', result.message || 'Failed to update donation');
+            }
+          } catch (error) {
+            console.error('Error updating donation:', error);
+            Alert.alert('Error', 'An error occurred while updating the donation');
+          } finally {
+            setLoading(false);
+          }
+        };
+      
+        return (
+          <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
+            <ScrollView contentContainerStyle={styles.container}>
+              {/* Header */}
+              <View style={styles.header}>
+                <Text style={styles.headerTitle}>Edit the form</Text>
+              </View>
+      
