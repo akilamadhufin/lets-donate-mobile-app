@@ -1,6 +1,8 @@
 import { Stack } from "expo-router";
+import { DatabaseProvider } from './contexts/DatabaseContext';
 export default function RootLayout() {
   return (
+        <DatabaseProvider>
     <Stack initialRouteName="login">
       <Stack.Screen name="login" options={{ headerTitle: "Login", headerShown: true }} />
       <Stack.Screen name="index" options={{ headerTitle: "Home", headerShown: true }} />
@@ -12,5 +14,6 @@ export default function RootLayout() {
       <Stack.Screen name="updateaccount" options={{ headerTitle: "Update Account", headerShown: true }} />
       <Stack.Screen name="editdonation" options={{ headerTitle: "Edit Donation", headerShown: true }} />
     </Stack>
+    </DatabaseProvider>
   );
 }
