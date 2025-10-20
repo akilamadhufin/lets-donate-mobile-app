@@ -12,12 +12,16 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import BottomNav from '../components/BottomNav';
+import syncService from '../database/SyncService';
+import { useDatabase } from '../contexts/DatabaseContext';
 
 const SERVER_URL = 'http://10.0.2.2:3000';
 
 const BasketScreen = ({ user: propUser }) => {
   const router = useRouter();
   const params = useLocalSearchParams();
+  const { dbInitialized, isOnline, isSyncing } = useDatabase();
+
   let user = propUser;
   if (!user && params.user) {
     try {
@@ -34,6 +38,11 @@ const BasketScreen = ({ user: propUser }) => {
 
   // Fetch basket items from server
   const fetchBasketItems = async (isRefresh = false) => {
+        if (!dbInitialized) {
+      console.log('Database not yet initialized');
+      return;
+    }
+
     try {
       if (!isRefresh) setLoading(true);
       
@@ -45,16 +54,15 @@ const BasketScreen = ({ user: propUser }) => {
         return;
       }
 
-      const response = await fetch(`${SERVER_URL}/api/cart/${actualUserId}`);
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const data = await response.json();
-      setBasketItems(data.data || []);
+      // Get cart from local database (SyncService handles server sync)
+      const cart = await syncService.getCart(actualUserId);
+      setBasketItems(cart);
       setError(null);
     } catch (err) {
       console.error('Error fetching basket:', err);
-      setError('Failed to load basket items. Please check your internet connection.');
+      setError(isOnline 
+        ? 'Failed to load basket items. Please try again.' 
+        : 'Offline mode: Showing cached basket.');
     } finally {
       if (isRefresh) {
         setRefreshing(false);
@@ -87,17 +95,17 @@ const BasketScreen = ({ user: propUser }) => {
             try {
               // Extract the actual userId string from the user object
               const actualUserId = user?.userId || user?._id || user;
-              const response = await fetch(`${SERVER_URL}/api/cart/${actualUserId}/${itemId}`, {
-                method: 'DELETE',
-              });
-
-              const result = await response.json();
+              const result = await syncService.removeFromCart(actualUserId, itemId);
 
               if (result.success) {
-                Alert.alert('Success', 'Item removed from basket');
+                if (result.offline) {
+                  Alert.alert('Success', 'Item removed! Will sync when online.');
+                } else {
+                  Alert.alert('Success', 'Item removed from basket');
+                }
                 fetchBasketItems();
               } else {
-                Alert.alert('Error', result.message || 'Failed to remove item');
+                Alert.alert('Error', 'Failed to remove item');
               }
             } catch (error) {
               console.error('Error removing item:', error);
