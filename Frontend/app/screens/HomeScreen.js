@@ -12,12 +12,19 @@ import {
     View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import syncService from '../database/SyncService';
+import { useDatabase } from '../contexts/DatabaseContext';
+import BottomNav from '../components/BottomNav';
 const categories = ['All', 'Clothes', 'Books', 'Sports', 'Electronics'];
 const SERVER_URL = 'http://10.0.2.2:3000';
 
 const HomeScreen = ({ user: propUser, onLogout }) => {
   const router = useRouter();
   const params = useLocalSearchParams();
+  const { dbInitialized, isOnline, isSyncing } = useDatabase();
+
+
+
   let user = propUser;
   if (!user && params.user) {
     try {
@@ -33,20 +40,52 @@ const HomeScreen = ({ user: propUser, onLogout }) => {
   const [error, setError] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
 
+
+    // Book item handler using SyncService (offline-first)
+  const handleBookItem = async (itemId) => {
+    try {
+      // Extract the actual userId string from the user object
+      const actualUserId = user?.userId || user?._id || user;
+      console.log('Booking with userId:', actualUserId);
+      
+      const result = await syncService.bookItem(actualUserId, itemId);
+
+      if (result.success) {
+        if (result.offline) {
+          alert('Item booked! Will sync when online.');
+        } else {
+          alert('Item booked successfully!');
+        }
+        // Refresh the donations list from local database
+        fetchDonations();
+      } else {
+        alert('Failed to book item');
+      }
+    } catch (error) {
+      console.error('Error booking item:', error);
+      alert('An error occurred while booking the item');
+    }
+  };
+
   // Fetch donations from server
   const fetchDonations = async (isRefresh = false) => {
+
+        if (!dbInitialized) {
+      console.log('Database not yet initialized');
+      return;
+    }
+
     try {
       if (!isRefresh) setLoading(true);
-      const response = await fetch(`${SERVER_URL}/api/donations`);
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const data = await response.json();
-      const donations = data.data;
+      // Get donations from local database (SyncService handles server sync)
+      const donations = await syncService.getDonations();
       setItems(donations);
       setError(null);
     } catch (err) {
-      setError('Failed to load donations. Please check your internet connection.');
+      console.error('Error fetching donations:', err);
+      setError(isOnline 
+        ? 'Failed to load donations. Please try again.' 
+        : 'Offline mode: Showing cached donations.');
     } finally {
       if (isRefresh) {
         setRefreshing(false);
@@ -64,8 +103,10 @@ const HomeScreen = ({ user: propUser, onLogout }) => {
 
   // Fetch data when component loads
   useEffect(() => {
-    fetchDonations();
-  }, []);
+    if (dbInitialized) {
+      fetchDonations();
+    }
+  }, [dbInitialized]);
 
   // Filter items by category or search
   const filteredItems = items?.filter(
