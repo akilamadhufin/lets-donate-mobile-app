@@ -320,10 +320,11 @@ app.post('/api/cart/book', async (req, res) => {
             });
         }
 
-        // Update the donation
-        donation.available = false;
-        donation.bookedBy = userId;
-        await donation.save();
+        // Update the donation using findByIdAndUpdate to avoid validation issues
+        await Donation.findByIdAndUpdate(itemId, {
+            available: false,
+            bookedBy: userId
+        }, { runValidators: false });
 
         // Create a Cart entry
         const cartEntry = await Cart.create({

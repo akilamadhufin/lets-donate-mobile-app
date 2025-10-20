@@ -119,8 +119,10 @@ const BasketScreen = ({ user: propUser }) => {
 
   // Fetch data when component loads
   useEffect(() => {
-    fetchBasketItems();
-  }, []);
+    if (dbInitialized) {
+      fetchBasketItems();
+    }
+  }, [dbInitialized]);
 
   // Render empty component
   const renderEmptyComponent = () => (

@@ -15,12 +15,12 @@ const donationSchema = new Schema({
         required: true
     },
     image: {
-        type: String,
+        type: Schema.Types.Mixed, // Allow both String and Array
         required: false
     },
     pickupLocation: {
         type: String,
-        required: true
+        required: false // Make optional to support legacy data
     },
     publishedDate: {
         type: Date,

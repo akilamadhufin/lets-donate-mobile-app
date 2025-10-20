@@ -201,7 +201,7 @@ class DatabaseService {
       return donations.map(d => ({
         ...d,
         _id: d.server_id,
-        image: d.image ? JSON.parse(d.image) : [],
+        image: d.image ? (d.image.startsWith('[') || d.image.startsWith('{') ? JSON.parse(d.image) : d.image) : [],
         userId: d.user_id,
         bookedBy: d.booked_by,
         available: d.available === 1
@@ -222,7 +222,7 @@ class DatabaseService {
       return donations.map(d => ({
         ...d,
         _id: d.server_id,
-        image: d.image ? JSON.parse(d.image) : [],
+        image: d.image ? (d.image.startsWith('[') || d.image.startsWith('{') ? JSON.parse(d.image) : d.image) : [],
         userId: d.user_id,
         bookedBy: d.booked_by,
         available: d.available === 1
@@ -341,7 +341,9 @@ class DatabaseService {
       }
       
       return validItems.map(item => ({
+        _id: `${item.user_id}_${item.item_id}`, // Unique key for React list rendering
         userId: item.user_id,
+        bookedAt: item.created_at,
         itemId: {
           _id: item.server_id,
           title: item.title,
@@ -354,7 +356,7 @@ class DatabaseService {
           country: item.country,
           latitude: item.latitude,
           longitude: item.longitude,
-          image: item.image ? JSON.parse(item.image) : [],
+          image: item.image ? (item.image.startsWith('[') || item.image.startsWith('{') ? JSON.parse(item.image) : item.image) : [],
           available: item.available === 1,
           userId: item.user_id
         }
