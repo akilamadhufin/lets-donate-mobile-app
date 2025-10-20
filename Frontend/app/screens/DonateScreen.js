@@ -173,6 +173,8 @@ export default function DonateScreen(props) {
               style={styles.picker}
               itemStyle={styles.pickerItem}
             >
+
+              {/*  Picker is used to select the category of the item  */}
               <Picker.Item label="Select Category *" value="" />
               <Picker.Item label="Clothes" value="Clothes" />
               <Picker.Item label="Books" value="Books" />
