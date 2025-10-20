@@ -35,12 +35,17 @@ export default function LoginPage() {
         } catch {
           data = text;
         }
-        console.log('Login response:', response.status, data);
         if (response.status === 200) {
           setError('');
+          if (data && data.user && data.user._id) {
+            console.log('Logged in userId:', data.user._id);
+          } else {
+            console.log('No userId found in login response:', data);
+          }
           const userData = {
             email,
             firstname: email.split('@')[0],
+            userId: data.user && data.user._id ? data.user._id : null
           };
           router.replace({ pathname: '/', params: { user: JSON.stringify(userData) } });
         } else {
