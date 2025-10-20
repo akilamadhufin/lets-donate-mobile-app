@@ -15,6 +15,9 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import syncService from '../database/SyncService';
 import { useDatabase } from '../contexts/DatabaseContext';
 import BottomNav from '../components/BottomNav';
+import SearchBar from '../components/SearchBar';
+import FilterModal from '../components/FilterModal';
+
 const categories = ['All', 'Clothes', 'Books', 'Sports', 'Electronics'];
 const SERVER_URL = 'http://10.0.2.2:3000';
 
@@ -36,9 +39,16 @@ const HomeScreen = ({ user: propUser, onLogout }) => {
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [search, setSearch] = useState('');
   const [items, setItems] = useState([]);
+  const [filteredItems, setFilteredItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
+  const [showFilters, setShowFilters] = useState(false);
+  const [filters, setFilters] = useState({
+    category: 'all',
+    sortBy: 'newest',
+    availableOnly: false,
+  });
 
 
     // Book item handler using SyncService (offline-first)
@@ -108,12 +118,63 @@ const HomeScreen = ({ user: propUser, onLogout }) => {
     }
   }, [dbInitialized]);
 
-  // Filter items by category or search
-  const filteredItems = items?.filter(
-    (item) =>
-      (selectedCategory === 'All' || item.category === selectedCategory) &&
-      item.title.toLowerCase().includes(search.toLowerCase())
-  ) || [];
+  // Apply advanced filters and search
+  useEffect(() => {
+    applyFiltersAndSearch();
+  }, [items, search, filters]);
+
+  const applyFiltersAndSearch = () => {
+    let result = [...items];
+
+    // Apply search filter
+    if (search.trim()) {
+      result = result.filter(item =>
+        item.title.toLowerCase().includes(search.toLowerCase()) ||
+        item.description?.toLowerCase().includes(search.toLowerCase()) ||
+        item.category?.toLowerCase().includes(search.toLowerCase())
+      );
+    }
+
+    // Apply category filter
+    if (filters.category !== 'all') {
+      result = result.filter(item => item.category === filters.category);
+    }
+
+    // Apply availability filter
+    if (filters.availableOnly) {
+      result = result.filter(item => item.available === true);
+    }
+
+    // Apply sorting
+    result.sort((a, b) => {
+      switch (filters.sortBy) {
+        case 'newest':
+          return new Date(b.createdAt || 0) - new Date(a.createdAt || 0);
+        case 'oldest':
+          return new Date(a.createdAt || 0) - new Date(b.createdAt || 0);
+        case 'title_asc':
+          return (a.title || '').localeCompare(b.title || '');
+        case 'title_desc':
+          return (b.title || '').localeCompare(a.title || '');
+        default:
+          return 0;
+      }
+    });
+
+    setFilteredItems(result);
+  };
+
+  const handleApplyFilters = (newFilters) => {
+    setFilters(newFilters);
+  };
+
+  const handleResetFilters = (resetFilters) => {
+    setFilters(resetFilters);
+  };
+
+  const handleClearSearch = () => {
+    setSearch('');
+  };
 
   // Render empty component
   const renderEmptyComponent = () => (
@@ -126,45 +187,100 @@ const HomeScreen = ({ user: propUser, onLogout }) => {
     </View>
   );
 
-  // Render individual item
-  const renderItem = ({ item }) => (
-    <View style={styles.itemCardRow}>
-      <Image
-        source={
-          item.image
-            ? { uri: `${SERVER_URL}${item.image}` }
-            : require('../../assets/images/icon.png')
-        }
-        style={styles.itemImage}
-      />
-      <View style={[styles.itemCard, !item.available && styles.itemCardUnavailable]}>
-        <View style={styles.titleRow}>
-          <Text style={styles.itemTitle}>{item.title}</Text>
-          <View style={[styles.statusBadge, item.available ? styles.statusAvailable : styles.statusUnavailable]}>
-            <Text style={[styles.statusText, item.available ? styles.statusTextAvailable : styles.statusTextUnavailable]}>
-              {item.available ? '\u2713 Available' : '\u2717 Booked'}
-            </Text>
-          </View>
+  // DonationItem component for FlatList
+  const DonationItem = ({ item }) => {
+    const images = Array.isArray(item.image) ? item.image : (item.image ? [item.image] : []);
+    const [currentImgIdx, setCurrentImgIdx] = useState(0);
+    const showPrev = () => setCurrentImgIdx(idx => Math.max(0, idx - 1));
+    const showNext = () => setCurrentImgIdx(idx => Math.min(images.length - 1, idx + 1));
+    const mainImg = images.length > 0 ? `${SERVER_URL}${images[currentImgIdx]}` : null;
+    return (
+      <View style={styles.itemCardRow}>
+        <View style={{ alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
+          <Image
+            source={mainImg ? { uri: mainImg } : require('../../assets/images/icon.png')}
+            style={styles.itemImage}
+          />
+          {images.length > 1 && (
+            <View style={styles.carouselArrows}>
+              <TouchableOpacity
+                style={[styles.arrowBtn, currentImgIdx === 0 && styles.arrowBtnDisabled]}
+                onPress={showPrev}
+                disabled={currentImgIdx === 0}
+              >
+                <Text style={styles.arrowText}>{'<'}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.arrowBtn, currentImgIdx === images.length - 1 && styles.arrowBtnDisabled]}
+                onPress={showNext}
+                disabled={currentImgIdx === images.length - 1}
+              >
+                <Text style={styles.arrowText}>{'>'}</Text>
+              </TouchableOpacity>
+            </View>
+          )}
+          {images.length > 1 && (
+            <Text style={styles.carouselIndicator}>{currentImgIdx + 1} / {images.length}</Text>
+          )}
         </View>
-        <Text style={styles.itemLocation}>Pickup from {item.pickupLocation}</Text>
-        <TouchableOpacity style={styles.detailsBtn}>
-          <Text style={styles.detailsBtnText}>More Details</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.bookBtn, !item.available && styles.bookBtnDisabled]}
-          disabled={!item.available}
-        >
-          <Text style={[styles.bookBtnText, !item.available && styles.bookBtnTextDisabled]}>
-            {item.available ? 'Book Item' : 'Already Booked'}
+        <View style={[styles.itemCard, !item.available && styles.itemCardUnavailable]}>
+          <View style={styles.titleRow}>
+            <Text style={styles.itemTitle}>{item.title}</Text>
+            <View style={[styles.statusBadge, item.available ? styles.statusAvailable : styles.statusUnavailable]}>
+              <Text style={[styles.statusText, item.available ? styles.statusTextAvailable : styles.statusTextUnavailable]}>
+                {item.available ? '\u2713 Available' : '\u2717 Booked'}
+              </Text>
+            </View>
+          </View>
+          <Text style={styles.itemLocation}>
+            📍 {item.city ? `${item.city}${item.state ? ', ' + item.state : ''}` : item.street || 'Location not specified'}
           </Text>
-        </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.detailsBtn}
+            onPress={() => {
+              router.push({
+                pathname: '/screens/DonationDetailsScreen',
+                params: { donation: JSON.stringify(item) },
+              });
+            }}
+          >
+            <Text style={styles.detailsBtnText}>More Details</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.bookBtn, !item.available && styles.bookBtnDisabled]}
+            disabled={!item.available}
+            onPress={() => handleBookItem(item._id)}
+          >
+            <Text style={[styles.bookBtnText, !item.available && styles.bookBtnTextDisabled]}>
+              {item.available ? 'Book Item' : 'Already Booked'}
+            </Text>
+          </TouchableOpacity>
+        </View>
       </View>
-    </View>
-  );
+    );
+  };
 
-  return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
+
+
+
+  // Render individual item
+  const renderItem = ({ item }) => <DonationItem item={item} />;
+  return(
+<SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
       <View style={styles.container}>
+        {/* Offline/Syncing Indicator */}
+        {!isOnline && (
+          <View style={styles.offlineBanner}>
+            <Text style={styles.offlineBannerText}>📡 Offline Mode - Showing cached data</Text>
+          </View>
+        )}
+        {isSyncing && isOnline && (
+          <View style={styles.syncingBanner}>
+            <ActivityIndicator size="small" color="#fff" />
+            <Text style={styles.syncingBannerText}>Syncing...</Text>
+          </View>
+        )}
+        
         {/* Greeting */}
         <View style={styles.header}>
           <View style={styles.greetingRow}>
@@ -177,20 +293,36 @@ const HomeScreen = ({ user: propUser, onLogout }) => {
             </TouchableOpacity>
           </View>
 
-          {/* Search Bar */}
-          <View style={styles.searchBar}>
-            <TextInput
-              style={styles.searchInput}
-              placeholder="search by category or name"
-              value={search}
-              onChangeText={setSearch}
-            />
-            <TouchableOpacity style={styles.searchButton}>
-              <Text style={{ fontSize: 20, color: '#fff' }}>🔍</Text>
-            </TouchableOpacity>
-          </View>
+          {/* Search Bar with Filter Button */}
+          <SearchBar
+            value={search}
+            onChangeText={setSearch}
+            placeholder="Search donations..."
+            onClear={handleClearSearch}
+            onFilterPress={() => setShowFilters(true)}
+          />
 
-          {/* Category Filters */}
+          {/* Active Filter Indicator */}
+          {(filters.category !== 'all' || filters.sortBy !== 'newest') && (
+            <View style={styles.activeFiltersIndicator}>
+              <Text style={styles.activeFiltersText}>
+                {filteredItems.length} results 
+                {filters.category !== 'all' && ` • ${filters.category}`}
+              </Text>
+              <TouchableOpacity 
+                onPress={() => handleResetFilters({
+                  category: 'all',
+                  sortBy: 'newest',
+                  availableOnly: false,
+                })}
+                style={styles.clearFiltersButton}
+              >
+                <Text style={styles.clearFiltersText}>Clear</Text>
+              </TouchableOpacity>
+            </View>
+          )}
+
+          {/* Category Filters - Legacy (can remove if you prefer only modal filters) */}
           <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.categoryScroll}>
             {categories.map((cat) => (
               <TouchableOpacity
@@ -203,6 +335,15 @@ const HomeScreen = ({ user: propUser, onLogout }) => {
             ))}
           </ScrollView>
         </View>
+
+        {/* Filter Modal */}
+        <FilterModal
+          visible={showFilters}
+          onClose={() => setShowFilters(false)}
+          filters={filters}
+          onApplyFilters={handleApplyFilters}
+          onResetFilters={handleResetFilters}
+        />
 
         {/* while loading the donations */}
         {loading && (
@@ -237,25 +378,27 @@ const HomeScreen = ({ user: propUser, onLogout }) => {
           />
         )}
 
-        {/* Bottom Navigation */}
-        <View style={styles.bottomNav}>
-          <TouchableOpacity style={styles.navBtn}>
-            <Text style={styles.navIcon}>🏠</Text>
-            <Text style={styles.navTextActive}>Home</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.navBtn} onPress={() => router.push('/donate')}>
-            <Text style={styles.navIcon}>🤲</Text>
-            <Text style={styles.navText}>Donate</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.navBtn}>
-            <Text style={styles.navIcon}>🧺</Text>
-            <Text style={styles.navText}>Basket</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.navBtn}>
-            <Text style={styles.navIcon}>👤</Text>
-            <Text style={styles.navText}>Profile</Text>
-          </TouchableOpacity>
-        </View>
+        {/* Bottom Navigation (reusable component) */}
+        <BottomNav
+            active="Home"
+            onNavigate={(path) => {
+              const actualUserId = user?.userId || user?._id || user;
+              if (path === '/donate') {
+                // Pass userId to DonateScreen
+                router.push({ pathname: '/donate', params: { userId: actualUserId } });
+              } else if (path === '/basket') {
+                // Navigate to basket with user info
+                router.push({ pathname: '/basket', params: { user: JSON.stringify(user) } });
+              } else if (path === '/profile') {
+                // Navigate to profile with user info
+                router.push({ pathname: '/profile', params: { user: JSON.stringify(user) } });
+              } else if (path === '/') {
+                router.push('/');
+              } else {
+                router.push(path);
+              }
+            }}
+        />
       </View>
     </SafeAreaView>
   );
@@ -267,6 +410,33 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     paddingTop: 40,
     paddingHorizontal: 10,
+  },
+   offlineBanner: {
+    backgroundColor: '#FF9800',
+    padding: 8,
+    alignItems: 'center',
+    marginBottom: 10,
+    borderRadius: 4,
+  },
+  offlineBannerText: {
+    color: '#fff',
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  syncingBanner: {
+    backgroundColor: '#00C6AE',
+    padding: 8,
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginBottom: 10,
+    borderRadius: 4,
+  },
+  syncingBannerText: {
+    color: '#fff',
+    fontSize: 12,
+    fontWeight: '600',
+    marginLeft: 8,
   },
   header: {
     marginBottom: 10,
@@ -352,6 +522,44 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     marginRight: 10,
     backgroundColor: '#eee',
+  },
+  carouselArrows: {
+    position: 'absolute',
+    top: '50%',
+    left: 0,
+    right: 0,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 8,
+    zIndex: 2,
+  },
+  arrowBtn: {
+    backgroundColor: '#00C6AE',
+    borderRadius: 16,
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    opacity: 1,
+  },
+  arrowBtnDisabled: {
+    opacity: 0.4,
+  },
+  arrowText: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  carouselIndicator: {
+    position: 'absolute',
+    bottom: 4,
+    left: '50%',
+    transform: [{ translateX: -20 }],
+    backgroundColor: 'rgba(0,0,0,0.3)',
+    color: '#fff',
+    paddingHorizontal: 8,
+    borderRadius: 10,
+    fontSize: 12,
+    zIndex: 2,
   },
   itemCard: {
     flex: 1,
@@ -500,6 +708,32 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#888',
     textAlign: 'center',
+  },
+  activeFiltersIndicator: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    backgroundColor: '#E3F2FD',
+    borderRadius: 8,
+    marginHorizontal: 16,
+    marginTop: 8,
+  },
+  activeFiltersText: {
+    fontSize: 13,
+    color: '#007AFF',
+    fontWeight: '500',
+    flex: 1,
+  },
+  clearFiltersButton: {
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+  },
+  clearFiltersText: {
+    fontSize: 13,
+    color: '#007AFF',
+    fontWeight: '600',
   },
 });
 export default HomeScreen;
